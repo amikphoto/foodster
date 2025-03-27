@@ -1,0 +1,65 @@
+{% extends "minimal.html" %}
+
+{% load cms_tags sekizai_tags menu_tags %}
+
+{%  block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-4 mx-auto text-center">
+                <a href="{% url 'core:search_cafes' %}">Венуться к списку кафе</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+
+                <div class="col-4 mx-auto text-center">
+                    <H4>
+                        Кабинет кафе:
+                        <a hx-get="{% url 'core:edit_cafe' cafe.id %}"
+                        hx-target="#dialog">{{ cafe.title }}</a>
+                    </H4>
+                </div>
+
+                <div class="d-grid gap-2 col-10 mx-auto">
+                    <a class="btn btn-outline-primary" href="{% url 'core:add_visit' cafe.id %}">
+                    Добавить посещение
+                    </a>
+                </div>
+                <div class="row">
+                    <div class="col-4 mx-auto text-center">
+                        Список посещений
+                    </div>
+                </div>
+
+
+
+                {% static_placeholder "Footercafecab" %}
+
+                <div id="search-results">
+                    {% include "visits.html" %}
+                </div>
+            </div>
+        </div>
+            <div class="col-12">
+                <div id="visit_details"></div>
+            </div>
+
+    </div>
+
+{#    {% include "dialog.html" %}#}
+{#    {% include "dialog2.html" %}#}
+
+{#      <script>#}
+{#        document.addEventListener('DOMContentLoaded', function() {#}
+{##}
+          {#const btn = document.querySelector('#btn');#}
+    {#          const modal = new bootstrap.Modal(document.querySelector('#modaldialog'));#}
+{#            modal.show();#}
+{##}
+{#        });#}
+{#      </script>#}
+
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{#{% extends "minimal.html" %}#}
+{% load render_form from formsetify %}
+{#{% load cms_tags sekizai_tags menu_tags %}#}
+
+{#{%  block content %}#}
+{#    <div id="dialog" class="modal">#}
+
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Новый элемент в справочник блюд</h5>
+            <button type="button" hx-target="#modaldialog" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                <django-formset endpoint="{{ request.path }}"{% if force_submission %} force-submission{% endif %}{% if withhold_feedback %} withhold-feedback="{{ withhold_feedback }}"{% endif %} csrf-token="{{ csrf_token }}">
+                    {% render_form form "bootstrap" %}
+                    <p class="mt-3">
+                          {% if add %}
+                            <button data-bs-dismiss="modal" type="button" df-click="submit({add: true})" hx-trigger="click delay:200ms" hx-get="{% url 'core:get_dish_id' %}" hx-vals='js:{"myVal": calculateValue(), "dish_fk": "{{ myval }}" }' hx-include="[id='id_title']" hx-target="#modaldialog" hx-on:click="setTimeout(() => {htmx.process(document.body); mynewsetter();},800);">Добавить блюдо</button>
+                          {% else %}
+                            <button data-bs-dismiss="modal" type="button" df-click="submit({update: true})" hx-vals='js:{"myVal": calculateValue(), "dish_fk": "{{  myval }}" }' hx-include="[id='id_title']" hx-get="{% url 'core:get_dish_id' %}" hx-target="#modaldialog" hx-on:click="setTimeout(() => {htmx.process(document.body);mynewsetter();},500);">Обновить блюдо</button>
+{#                            <button data-bs-dismiss="modal" type="button" df-click="submit({delete: true}) -> proceed">Удалить блюдо</button>#}
+                          {% endif %}
+                    </p>
+                </django-formset>
+          </div>
+          <div class="modal-footer">
+{#              {{ dish_fk }}#}
+{#              {{ myval }}#}
+          </div>
+        </div>
+      </div>
+
+<script>
+    function mysetter() {
+        let element = document.getElementById('{{ myval }}');
+        element.value = '{{ dish_fk }}';
+    }
+
+    function calculateValue() {
+        let element = document.getElementById('id_id');
+        return element.value;
+    }
+</script>
+
+{#    </div>#}
+
+{#  <script>#}
+{#    document.addEventListener('DOMContentLoaded', function() {#}
+{#        const modal = new bootstrap.Modal(document.querySelector('#dialog2'));#}
+{#        modal.show();#}
+{#    });#}
+{#  </script>#}
+
+{#{% endblock %}#}

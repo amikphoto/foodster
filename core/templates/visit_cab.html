@@ -1,0 +1,101 @@
+{#{% extends "minimal.html" %}#}
+{#{% load cms_tags sekizai_tags menu_tags %}#}
+
+
+{%  block content %}
+
+    <div id="dishes">
+
+    <p>Заведение: {{ cafe.title }}</p>
+    <p>Дата посещения: {{ visit_fk.data }}</p>
+
+        <button hx-get="{% url 'core:add_dish' cafe.id visit_fk.id %}" hx-target="#dialog">
+            Добавить новое блюдо
+        </button>
+
+
+
+        <!-- Button trigger modal -->
+{#        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">#}
+{#          Добавить новое блюдо#}
+{#        </button>#}
+{##}
+{#        <!-- Modal -->#}
+{#        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">#}
+{#          <div class="modal-dialog modal-xl" hx-target="this">#}
+{#            <div class="modal-content">#}
+{#              <div class="modal-header">#}
+{#                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>#}
+{#                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#              </div>#}
+{#              <div class="modal-body">#}
+{#                    <form method="post" >#}
+{#                        {% csrf_token %}#}
+{#                        <p>#}
+{#                            {{ visitform.as_p }}#}
+                {#            {{ visitform.cafe }}#}
+                {#            <input type="hidden" name="cafe" value="{{ cafe.id }}">#}
+                {#            {{ visitform.description }}#}
+                {#                    <input name="dish" type="search" placeholder="Введите название блюда как в меню">#}
+{#                        </p>#}
+{#                        <p>#}
+                {#        <input name="description" type="search" placeholder="Введите описание блюда">#}
+{#                        </p>#}
+{##}
+{#                        <input type="submit"#}
+{#                               hx-post="/cafes/{{ cafe.id }}/{{ visit.id }}/dishes/results/"#}
+{#                               hx-post="/dishes/"#}
+{#                               hx-trigger="click"#}
+                {#               hx-on::after-request=" if(event.detail.successful) this.reset()"#}
+                {#               hx-swap-oob="true"#}
+                {#               hx-target="#dishes"#}
+{#                               hx-target="#dish-results"#}
+{#                               hx-indicator=".htmx-indicator"#}
+{#                        data-bs-dismiss="modal">#}
+{#                    </form>#}
+{##}
+{#              </div>#}
+{#              <div class="modal-footer">#}
+{#                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#                <button type="button" class="btn btn-primary">Save changes</button>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+
+{#    <form method="post" >#}
+{#        {% csrf_token %}#}
+{#        <p>#}
+{#            {{ visitform.as_p }}#}
+{#            {{ visitform.cafe }}#}
+{#            <input type="hidden" name="cafe" value="{{ cafe.id }}">#}
+{#            {{ visitform.description }}#}
+{#                    <input name="dish" type="search" placeholder="Введите название блюда как в меню">#}
+{#        </p>#}
+{#        <p>#}
+{#        <input name="description" type="search" placeholder="Введите описание блюда">#}
+{#        </p>#}
+{##}
+{#        <input type="submit"#}
+{#               hx-post="/cafes/{{ cafe.id }}/{{ visit.id }}/dishes/results/"#}
+{#               hx-trigger="click"#}
+{#               hx-on::after-request=" if(event.detail.successful) this.reset()"#}
+{#               hx-swap-oob="true"#}
+{#               hx-target="#dishes"#}
+{#               hx-target="#dish-results"#}
+{#               hx-indicator=".htmx-indicator">#}
+{#        </input>#}
+{#    </form>#}
+
+    <div id="dish-results">
+        {% include "dishes_list.html" %}
+    </div>
+
+    </div>
+
+{#    <div id="modal" class="modal fade">#}
+{#          <div id="dialog" class="modal-dialog" hx-target="this"></div>#}
+{#    </div>#}
+
+
+{% endblock %}

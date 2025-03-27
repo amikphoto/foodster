@@ -1,0 +1,38 @@
+{% extends "minimal.html" %}
+{% load cms_tags sekizai_tags menu_tags static %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap5 %}
+
+{%  block content %}
+    <title>Список блюд</title>
+
+{#    <br>#}
+{#    {% if perms.core.add_cafemodel %}#}
+{#    <div class="container h-auto tab-pane fade active show">#}
+{#        <div class="d-grid gap-2 col-10 mx-auto">#}
+{#            <a class="btn btn-outline-primary" href="/cafe/add_cafe/">#}
+{#                Добавить кафе#}
+{#            </a>#}
+{#        </div>#}
+{#    </div>#}
+{#    {% endif %}#}
+{#    <br>#}
+
+    <div class="container h-auto filer-box">
+        {# Search form #}
+
+        {% if filter %}
+             <form hx-get="{% url 'core:bestdishes' %}" hx-target="div.table-container">
+                  {% bootstrap_form filter.form layout='horizontal' size='sm' horizontal_label_class='col-sm-4' horizontal_field_class='col-sm-7' %}
+                  {% bootstrap_button 'Искать' size="sm" %}
+                  {{ filter.form.media }}
+             </form>
+        {% endif %}
+    </div>
+
+    <div class="container h-auto">
+        {% render_table table %}
+    </div>
+    
+{% endblock %}
+

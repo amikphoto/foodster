@@ -1,0 +1,10 @@
+{#{% for star in rating %}#}
+{#    ☆#}
+{#{% endfor %}#}
+
+{% with ''|center:record.rating as range %}
+{% for _ in range %}
+☆
+    {#    {{ forloop.counter }}#}
+{% endfor %}
+{% endwith %}

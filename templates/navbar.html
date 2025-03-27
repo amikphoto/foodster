@@ -1,0 +1,125 @@
+{% load static %}
+{#<header class="p-3 mb-3 border-bottom">#}
+<header>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+{#        <div class="container-fluid">#}
+            <a href="#" class="navbar-brand">CritiFood</a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav">
+                    <a href="{% url 'core:bestdishes' %}" class="nav-item nav-link active">Блюда</a>
+                    <a href="{% url 'core:cafes' %}" class="nav-item nav-link active">Кафе</a>
+                    <a href="{% url 'core:myvisits' %}" class="nav-item nav-link active">Мои посещения</a>
+                    <a href="{% url 'core:dicts' %}" class="nav-item nav-link active">Справочники</a>
+                </div>
+                <div class="navbar-nav ms-auto">
+                    <div href="{% url 'core:dicts' %}" class="navbar-nav">
+
+                        <i id="toggleThemeButton" class="bi bi-moon"></i>
+{#                        <button id="toggleThemeButton" class="btn btn-primary">*</button>#}
+                    </div>
+                    {#                    <a href="#" class="nav-item nav-link">Login</a>#}
+                    {% if request.user.is_authenticated %}
+                        <div class="dropdown text-end dropstart">
+                          <a href="#" class="nav-item nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                              {{ request.user }}
+{#                            <img src="{{ request.user.profile.get_avatar }}" alt="{{ request.user }}" width="32" height="32" class="rounded-circle">#}
+                          </a>
+                          <ul class="dropdown-menu text-small dropdown-menu-end dropdown-menu-lg-start" style="">
+{#                            <li><a class="dropdown-item" href="{% url 'article-create-view' %}">Добавить статью</a></li>#}
+                            <li><a class="dropdown-item" href="{% url 'profile_detail' request.user.profile.slug %}">Мой профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <Li>
+                                <form action="{% url 'logout' %}" method="post">
+                                  {% csrf_token %}
+                                  <button  class="btn btn-outline-dark col-12 mx-auto" type="submit">Выйти</button>
+                                </form>
+                            </Li>
+                            {#                            <li><a class="dropdown-item" href="{% url 'logout' %}">Выход</a></li>#}
+                          </ul>
+                        </div>
+                    {% else %}
+                        <ul class="nav ">
+                          <li><a href="{% url 'register' %}" class="nav-item nav-link">Регистрация</a></li>
+                          <li><a href="{% url 'login' %}" class="nav-item nav-link">Вход</a></li>
+                        </ul>
+                    {% endif %}
+
+
+                </div>
+            </div>
+{#        </div>#}
+{#        <div class="container">#}
+{#    <nav class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">#}
+{#        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">#}
+{#          <img class="bi me-2" src="{% static 'images/django.png' %}" width="40" height="40" role="img" aria-label="Project" alt="Django Blog"/>#}
+{#        </a>#}
+{#        <ul class="navbar nav  navbar-dark col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">#}
+{#        <ul class="navbar nav navbar-dark">#}
+{#          <li><a href="{% url 'core:cafes' %}" class="nav-link px-2">Кафе</a></li>#}
+{#          <li><a href="{% url 'article-list' %}" class="nav-link px-2 link-dark">Статьи</a></li>#}
+{#          <li><a href="" class="nav-link px-2 link-secondary">Главная</a></li>#}
+{#          <li><a href="" class="nav-link px-2 link-dark">Статьи</a></li>#}
+{#        </ul>#}
+
+{#        {% if request.user.is_authenticated %}#}
+{#        <div class="dropdown text-end">#}
+{#          <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">#}
+{#              {{ request.user }}#}
+{#            <img src="{{ request.user.profile.get_avatar }}" alt="{{ request.user }}" width="32" height="32" class="rounded-circle">#}
+{#          </a>#}
+{#          <ul class="dropdown-menu text-small" style="">#}
+{#            <li><a class="dropdown-item" href="{% url 'article-create-view' %}">Добавить статью</a></li>#}
+{#            <li><a class="dropdown-item" href="{% url 'profile_detail' request.user.profile.slug %}">Мой профиль</a></li>#}
+{#            <li><hr class="dropdown-divider"></li>#}
+{#            <li><a class="dropdown-item" href="{% url 'logout' %}">Выход</a></li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        {% else %}#}
+{#            <ul class="nav ">#}
+{#              <li><a href="{% url 'register' %}" class="nav-link px-2 link-secondary">Регистрация</a></li>#}
+{#              <li><a href="{% url 'login' %}" class="nav-link px-2 link-dark">Вход</a></li>#}
+{#            </ul>#}
+{#        {% endif %}#}
+{#    </div>#}
+    </div>
+</nav>
+</header>
+<script>
+    // Получаем элемент body
+    const body = document.body;
+
+    // Получаем текущую тему из localStorage
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    body.setAttribute('data-bs-theme', savedTheme);
+    const toggleThemeButtonClass = document.getElementById('toggleThemeButton')
+    if (savedTheme == 'light') {
+        toggleThemeButtonClass.setAttribute('class','bi bi-moon text-primary nav-link')
+    } else {
+        toggleThemeButtonClass.setAttribute('class','bi bi-sun text-primary nav-link')
+    }
+
+    // Добавляем обработчик клика на кнопку
+    document.getElementById('toggleThemeButton').addEventListener('click', () => {
+      // Определяем новую тему
+      const currentTheme = body.getAttribute('data-bs-theme');
+      const toggleThemeButtonClass = document.getElementById('toggleThemeButton')
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        if (newTheme == 'light') {
+            toggleThemeButtonClass.setAttribute('class','bi bi-moon text-primary nav-link')
+        } else {
+            toggleThemeButtonClass.setAttribute('class','bi bi-sun text-primary nav-link')
+        }
+
+      // Устанавливаем новую тему
+      body.setAttribute('data-bs-theme', newTheme);
+
+      // Сохраняем тему в localStorage
+      localStorage.setItem('theme', newTheme);
+
+    });
+
+</script>

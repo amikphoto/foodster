@@ -1,0 +1,33 @@
+{% load cms_tags sekizai_tags menu_tags %}
+
+{%  block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <H4>
+                    Список посещений кафе:
+                    <a hx-get="{% url 'core:edit_cafe' cafe.id %}"
+                    hx-target="#dialog">{{ cafe.title }}
+                </a>
+                </H4>
+
+                <button hx-get="{% url 'core:add_visit' cafe.id %}"
+                        hx-target="#dialog">
+            {#            hx-trigger="click">#}
+                Добавить посещение
+                </button>
+
+                {% static_placeholder "Footercafecab" %}
+
+                <div id="search-results">
+                    {% include "visits.html" %}
+                </div>
+            </div>
+            <div class="col-9">
+                <div id="visit_details">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

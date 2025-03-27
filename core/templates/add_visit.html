@@ -1,0 +1,37 @@
+{% load i18n %}
+{% load formsetify %}
+<div class="modal-content modal-dialog modal-xl" hx-target="this">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Новое посещение</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+            <django-formset endpoint="{{ request.path }}" csrf-token="{{ csrf_token }}">
+              {% render_form form "bootstrap" field_classes="mb-2" %}
+              {% if add %}
+                <button type="button" df-click="submit({add: true}) -> proceed">{% trans "Добавить посещение" %}</button>
+              {% else %}
+                <button type="button" df-click="submit({update: true}) -> proceed">{% trans "Update" %}</button>
+                <button type="button" df-click="submit({delete: true}) -> proceed">{% trans "Delete" %}</button>
+              {% endif %}
+            </django-formset>
+
+{#            <form method="post" >#}
+{#                {% csrf_token %}#}
+{#                <p>#}
+{#                    {{ form.as_p }}#}
+{#                </p>#}
+{##}
+{#                <input type="submit"#}
+{#                       hx-post="{% url 'core:add_visit' cafe.id %}"#}
+{#                       hx-trigger="click"#}
+{#                       hx-target="#search-results"#}
+{#                       hx-indicator=".htmx-indicator"#}
+{#                data-bs-dismiss="modal">#}
+{#            </form>#}
+{##}
+      </div>
+      <div class="modal-footer">
+      </div>
+</div>

@@ -1,0 +1,86 @@
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-10 mx-auto">
+                    <form>
+                        {% csrf_token %}
+                        <input class="form-control form-control-lg" type="search"
+                               name="search" placeholder="Поиск по названию кафе..."
+                               hx-get="/search/results/"
+                               hx-trigger="keyup changed, search"
+                               hx-target="#search-results"
+                               hx-indicator=".htmx-indicator">
+                    </form>
+                        <br>
+                    {#    <form action="add_new_cafe.html">#}
+                    {#        <button type="submit" hx-post="{% url 'core:add_new_cafe' %}" class="btn btn-success">Добавить кафе</button>#}
+                    {#        <button onclick="document.location='add_new_cafe'">+</button>#}
+                        {#    </form>#}
+                    <div class="d-grid gap-2 col-12 mx-auto">
+                            <button class="btn btn-outline-primary" hx-get="{% url 'core:add_cafe' %}" hx-trigger="click" hx-target="#dialog" data-bs-toggle="modal" data-bs-target="#dialog">
+                                Добавить новое кафе
+                            </button>
+                    </div>
+                    <br>
+
+                    <div class="col-12 ">
+                        Сортировка
+                        <div class="btn-group sort-btn">
+                          <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                  type="button" id="dropdownMenuButton1"
+                                  data-bs-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
+                          >{{ sortdef }}</button>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                {% for key, value in sortlist.items %}
+                                    <li><a class="dropdown-item" href="#"
+
+                                       hx-get="/search/sort/"
+                                       hx-swap="innerHTML"
+                                       hx-vals = '{"myVal1": "{{ key }}", "myVal2": "{{ updownstr }}", "myVal3": "name" }'
+                                       hx-target="#search"
+
+                                    >{{ value }}</a></li>
+                                {% endfor %}
+    {#                            <li><a class="dropdown-item" href="#">По количеству отзывов</a></li>#}
+    {#                            <li><a class="dropdown-item" href="#">По дате создания</a></li>#}
+                              </ul>
+                        </div>
+                             в порядке
+                        <div class="btn-group sort-btn">
+                            <button class="btn btn-sm btn-outline-primary rounded"
+                                data-sort="none"
+                                hx-get="/search/sort/"
+                                hx-swap="innerHTML"
+                                hx-vals = '{"myVal1": "{{ sortstr }}", "myVal2": "{{ updownstr }}", "myVal3": "sort" }'
+                                hx-target="#search"
+
+                            >
+                            <i id="sortindicator" class="bi {{ bisortdown }}"></i>
+                            </button><!-- .dropdown-toggle adds rounded borders and reduces padding. It does not trigger dropdowns. -->
+
+
+
+    {#                        <ul class="dropdown-menu">#}
+    {#                            <li><a href="#" tabindex="-1" data-type="alpha">Name</a></li>#}
+    {#                            <li><a href="#" tabindex="-1" data-type="numeric">Date</a></li>#}
+    {#                        </ul>#}
+    {#                    </div>#}
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div id="search-results">
+                        {% include "search_results.html" %}
+                    </div>
+                </div>
+                <div class="col-12 ">
+                    <div id="cafes_details">
+                        {% include "visits.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

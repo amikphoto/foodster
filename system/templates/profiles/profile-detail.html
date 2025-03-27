@@ -1,0 +1,83 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="card border-0 mb-2">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <figure>
+                        <img src="{{ profile.get_avatar }}" class="img-fluid rounded-0" alt="{{ profile }}">
+                    </figure>
+                </div>
+                <div class="col-md-9">
+                     <h5 class="card-title">
+                        {{ profile }}
+                    </h5>
+                    <div class="card-text">
+                        <ul>
+                            <li>Никнейм: {{ profile.user.username }}</li>
+                            <li>Заходил: {{ profile.user.last_login }}</li>
+                            <li>Статус: {% if profile.is_online %}<span class="text-success">Online</span>{% else %}<span class="text-danger">Offline</span>{% endif %}</li>
+                            <li>Возраст: {{ profile.get_age }}</li>
+                            <li>О себе: {{ profile.bio }}</li>
+                        </ul>
+                        {% if request.user != profile.user and request.user.is_authenticated %}
+                            {% if request.user.profile in profile.followers.all %}
+                                <button class="btn btn-sm btn-danger btn-following" data-slug="{{ profile.slug }}">
+                                    Отписаться от {{ profile }}
+                                </button>
+                            {% else %}
+                               <button class="btn btn-sm btn-primary btn-following" data-slug="{{ profile.slug }}">
+                                    Подписаться на {{ profile }}
+                                </button>
+                           {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card border-0">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="card-title">
+                        Подписки
+                    </h6>
+                    <div class="card-text">
+                     <div class="row">
+                           {% for following in profile.following.all %}
+                              <div class="col-md-2">
+                               <a href="{{ following.get_absolute_url }}">
+                                 <img src="{{ following.get_avatar }}" class="img-fluid rounded-1" alt="{{ following }}"/>
+                               </a>
+                              </div>
+                          {% endfor %}
+                     </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="card-title">
+                        Подписчики
+                    </h6>
+                    <div class="card-text">
+                        <div class="row" id="followersBox">
+                           {% for follower in profile.followers.all %}
+                              <div class="col-md-2" id="user-slug-{{ follower.slug }}">
+                               <a href="{{ follower.get_absolute_url }}">
+                                 <img src="{{ follower.get_avatar }}" class="img-fluid rounded-1" alt="{{ follower }}"/>
+                               </a>
+                              </div>
+                          {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'custom/js/profile.js' %}"></script>
+{% endblock %}

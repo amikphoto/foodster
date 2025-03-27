@@ -1,0 +1,15 @@
+{% extends "minimal.html" %}
+{% load render_form from formsetify %}
+{% load cms_tags sekizai_tags menu_tags %}
+
+{%  block content %}
+
+    <div class="container">
+                <django-formset endpoint="{{ request.path }}"{% if force_submission %} force-submission{% endif %}{% if withhold_feedback %} withhold-feedback="{{ withhold_feedback }}"{% endif %} csrf-token="{{ csrf_token }}">
+                    {% render_form form "bootstrap" %}
+                    <p class="mt-3">
+                            <button type="button" df-click="submit({add: true}) -> proceed">Добавить блюдо</button>
+                    </p>
+                </django-formset>
+    </div>
+{% endblock %}

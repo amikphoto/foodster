@@ -1,0 +1,13 @@
+{% autoescape off %}
+
+Здравствуйте, {{ user.get_username }},
+
+Для подтверждения регистрации на сайте Django блог, перейдите по ссылке ниже:
+
+    https://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Спасибо, что решили присоединиться к нам!
+
+Команда сайта Django блог
+
+{% endautoescape %}

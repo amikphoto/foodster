@@ -1,0 +1,11 @@
+<div id="Dishes">
+  {% for dish in dishes %}
+    <div>{{ forloop.counter }} {{ dish.title }} {{ dish.description }}
+      <a
+        hx-get="{% url 'core:edit_dish' cafe.id visit.id dish.id %}"
+              hx-target="#dialog">
+        Редактировать?
+      </a>
+    </div>
+  {% endfor %}
+</div>

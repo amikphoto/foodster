@@ -1,0 +1,12 @@
+  <script>
+    function callFunc(obj) {
+      console.log(obj.value);
+      console.log(obj.selectedIndex);
+    }
+  </script>
+
+<select onchange="callFunc(this);" class="form-select" name="dishcatalog_fk" form="id_visit_dishes.0.dish_form" id="{{ target_id }}">
+{% for dish in dish_list %}
+    <option value="{{ dish.id }}">{{ dish.title }}</option>
+{% endfor %}
+</select>

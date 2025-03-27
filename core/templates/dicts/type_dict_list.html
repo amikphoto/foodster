@@ -1,0 +1,27 @@
+{% extends "minimal.html" %}
+{% load cms_tags sekizai_tags menu_tags static %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap5 %}
+
+{%  block content %}
+    <title>Список</title>
+    
+    <div id="filtertable">
+        <div class="container h-auto filer-box">
+            {# Search form #}
+
+            {% if filter %}
+                 <form hx-get="{% url 'core:types' %}" hx-target="#filtertable">
+                      {% bootstrap_form filter.form layout='horizontal' size='sm' horizontal_label_class='col-sm-4' horizontal_field_class='col-sm-7' %}
+                      {% bootstrap_button 'Искать' size="sm" %}
+                      {{ filter.form.media }}
+                 </form>
+            {% endif %}
+        </div>
+
+        <div id="table" class="container h-auto">
+            {% render_table table %}
+        </div>
+    </div>
+{% endblock %}
+

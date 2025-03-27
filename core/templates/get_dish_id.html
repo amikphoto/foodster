@@ -1,0 +1,12 @@
+<div>
+    <input id="id_value" value="{{ title }}">
+    <input id="myval" value="{{ myval }}">
+</div>
+
+<script>
+    function mynewsetter() {
+        console.log("Скрипт 2 сработал");
+        let element1 = document.getElementById('{{ dish_fk }}');
+        element1.value = "{{ myval }}";
+    }
+</script>

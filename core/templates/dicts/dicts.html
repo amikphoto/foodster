@@ -1,0 +1,51 @@
+{% extends "minimal.html" %}
+{% load cms_tags sekizai_tags menu_tags static %}
+{#{% load render_table from django_tables2 %}#}
+{% load django_bootstrap5 %}
+
+{%  block content %}
+    <title>Справочники</title>
+    
+    <div class="container h-auto">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    Наименование
+                </th>
+                <th>
+                    Количество элементов
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <a href="{% url 'core:types' %}" class="nav-item nav-link active">Справочник типов кухни</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'core:types' %}" class="nav-item nav-link active">{{ types_count }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="{% url 'core:classes' %}" class="nav-item nav-link active">Справочник кулинарных классов</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'core:classes' %}" class="nav-item nav-link active">{{ class_count }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Справочник блюд для сравнения
+                    </td>
+                    <td>
+                        ссылка
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+

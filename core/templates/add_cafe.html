@@ -1,0 +1,75 @@
+{% load crispy_forms_tags %}
+{#        <!-- Button trigger modal -->#}
+{#        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">#}
+{#          Добавить новое блюдо#}
+{#        </button>#}
+
+{#<form hx-post="{{ request.path }}" hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' class="modal-content">#}
+
+{#        <!-- Modal -->#}
+{#        <div> {#  class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> #}
+          <div class="modal-content modal-xl" hx-target="this">
+{#            <div class="modal-content modal-xl">#}
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Новое заведение</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                    <form enctype="multipart/form-data" action="add_cafe.html">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+
+{#                        {{ formset | crispy }}#}
+                            {% for forms in formset %}
+                                {{ formset.management_form }}
+                                <div id="imagerows">
+                                    <div id="imagerow">
+                                        <div class="form-group col-md-6 mb-0">
+                                            {{ forms.image | as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        <p>
+                        </p>
+
+                       <a href="#" id="add-image-button" class="btn btn-secondary add-images">Добавить фото</a> <!-- id="add-inlineformsetname-button" -->
+                      <p>
+                      </p>
+                        <button type="submit"
+                               hx-post="{% url 'core:add_cafe' %}"
+                               hx-encoding = "multipart/form-data"
+                               hx-trigger="click"
+                               hx-target="#search-results"
+                               hx-indicator=".htmx-indicator"
+                        data-bs-dismiss="modal"
+                        class="btn btn-primary">
+                        Загрузить</button>
+                    </form>
+
+              </div>
+              <div class="modal-footer">
+{#                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#                <button type="button" class="btn btn-primary">Save changes</button>#}
+              </div>
+{#            </div>#}
+          </div>
+{#        </div>#}
+{#    </div>#}
+
+<script>
+    $(document).ready(function() {
+        // when user clicks add more btn of images
+      $('.add-images').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#imagerows').children().length;
+          var tmplMarkup = $('#imagerow').html();
+          var compiledTmpl = tmplMarkup.replace(/images-0/g, 'images-'+count);
+          $('#imagerows').append(compiledTmpl);
+
+          {#// update form count#}
+          $('#id_images-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
+</script>

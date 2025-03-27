@@ -1,0 +1,22 @@
+{#<select id="search_list" class="mr-datalist w-100">#}
+
+<div class="dropdown">
+  {% if selected_dishes %}
+      <button style="visibility: hidden;" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      </button>
+      <ul class="dropdown-menu show w-100">
+    {#    <li><a class="dropdown-item" href="#">Action</a></li>#}
+    {#    <li><a class="dropdown-item" href="#">Another action</a></li>#}
+    {#    <li><a class="dropdown-item" href="#">Something else here</a></li>#}
+        {% for dish in selected_dishes %}
+            <li><a class="dropdown-item" href="#">{{ dish.title }}</a></li>
+        {% endfor %}
+  {% endif %}
+  </ul>
+</div>
+
+
+{#{% for dish in selected_dishes %}#}
+{#    <option>{{ dish.title }}</option>#}
+{#{% endfor %}#}
+{#</select>#}

@@ -1,0 +1,34 @@
+{% extends "minimal.html" %}
+
+
+{% load cms_tags sekizai_tags menu_tags %}
+
+{%  block content %}
+
+{#    <p>{{ form.data }}</p>#}
+{#    <p>{{ cafe }}</p>#}
+    <p>
+    Всё о посещении
+    </p>
+
+    {# тут должен быть список блюд#}
+    {##}
+    {##}
+
+
+        <form method="POST"
+            class="form-group"
+{#            hx-post="{% url 'editcompany' mydata.pk %}"#}
+{#            hx-target='#myinclude'#}
+            >
+        {% csrf_token %}
+        {{ form.as_p }}
+{#        <input type="hidden" name="cafe" value="{{ cafe.id }}">#}
+
+        <button type="submit" class="btn btn-success" >Сохранить</button>
+{#        <button id="cancel" onclick="javascript:history.go(-1);">Отмена</button>#}
+
+    </form>
+
+
+{% endblock %}

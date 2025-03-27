@@ -1,0 +1,24 @@
+<div class="modal-content modal-dialog modal-xl" hx-target="this">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{ cafe.id }}:{{ visit.id }}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form method="post" >
+            {% csrf_token %}
+            <p>
+                {{ visitform.as_p }}
+            </p>
+
+            <input type="submit"
+                   hx-post="/cafes/{{ cafe.id }}/{{ visit.id }}/dishes/results/"
+                   hx-trigger="click"
+                   hx-target="#dish-results"
+                   hx-indicator=".htmx-indicator"
+            data-bs-dismiss="modal">
+        </form>
+
+    </div>
+    <div class="modal-footer">
+    </div>
+</div>

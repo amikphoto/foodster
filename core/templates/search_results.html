@@ -1,0 +1,29 @@
+
+<div class="col-12 mx-auto">
+
+    Показано {{allcafe|length}} / {{ count }} заведений.
+    <p></p>
+    <table class="table table-striped table-hover">
+    {% for item in allcafe %}
+
+            <tr>
+                <td><a href="{% url 'core:cab_cafe' item.id %}">{{ item.title }}</a></td>
+                <td><a hx-get="{% url 'core:cab_cafe' item.id %}" hx-target="#cafes_details">Просмотр</a>
+                </td>
+        {#        <td><a hx-get="{% url 'core:edit_cafe' item.id %}"#}
+        {#               hx-target="#dialog">Редактировать?#}
+        {#            </a>#}
+                </td>
+            </tr>
+    {#    {% url 'core:cab_cafe' item.id %}#}
+
+    {#    <p>"Номер": {{ item.id }}</p>#}
+
+        {#    <a href="{% url 'cab_cafe' %}">кафе</a>#}
+    {#    <a {% url 'cab_cafe' item.id %} >ссылка</a>#}
+    {#    {% url 'core:cafes' cafe.id %}#}
+
+
+    {% endfor %}
+    </table>
+</div>

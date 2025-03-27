@@ -1,0 +1,28 @@
+{#{% extends CMS_TEMPLATE %}#}
+{% extends "minimal.html" %}
+{% load cms_tags sekizai_tags menu_tags %}
+
+{%  block content %}
+   <div id="All">
+
+    {% static_placeholder "Head" %}
+
+    <h1>Добавить кафе</h1>
+    <div id="Add">
+        <form class="form-group"
+            hx-post="{% url 'core:add_cafe' %}"
+            hx-target="#All"
+            hx-swap="innerHTML">
+            {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Добавить кафе</button>
+        </form>
+    </div>
+
+    <h1>Кафе</h1>
+
+    {% include "cafes_list.html" %}
+
+    {% static_placeholder "Footer" %}
+
+   </div>
+{% endblock %}

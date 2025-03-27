@@ -1,0 +1,13 @@
+{#<tr hx-trigger='cancel' class='editing' hx-get="/contact/${contact.id}">#}
+{#hx-include="closest tr" #}
+<tr class="editing">
+  <td><input name='name' class="w-100" value='{{ name }}'></td>
+  <td>
+    <button class="btn btn-danger" hx-get="/dictionaries/types/" hx-target="#filtertable" hx-swap="innerHTML">
+      Отменить
+    </button>
+    <button class="btn btn-danger" hx-get="/dictionaries/types/{{ record }}/" hx-include="closest tr" hx-target="#filtertable" hx-swap="innerHTML">
+      Сохранить
+    </button>
+  </td>
+</tr>

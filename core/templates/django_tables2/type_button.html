@@ -1,0 +1,10 @@
+<button class="btn btn-secondary" hx-get="/edittype/{{ record.id }}"
+                onClick="
+                        let secondarybutton = htmx.findAll('.btn-secondary')
+                        
+                        secondarybutton.forEach(function(button) {
+                            button.setAttribute('disabled', 'disabled')
+                            });
+                
+                         "
+>Редактировать</button>

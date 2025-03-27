@@ -1,0 +1,21 @@
+{% extends "minimal.html" %}
+
+
+{% load cms_tags sekizai_tags menu_tags %}
+
+{%  block content %}
+
+        <form method="POST"
+            class="form-group"
+{#            hx-post="{% url 'editcompany' mydata.pk %}"#}
+{#            hx-target='#myinclude'#}
+            >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success" >Сохранить</button>
+        <button id="cancel" onclick="javascript:history.go(-1);">Отмена</button>
+
+    </form>
+
+
+{% endblock %}

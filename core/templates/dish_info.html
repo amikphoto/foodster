@@ -1,0 +1,20 @@
+<div name="dish_info" class="col-12 mb-2">
+    <div class="bg-secondary bg-opacity-10">
+{#        <div class="container p-3 ">#}
+            <table class="table table-hover" style="margin-bottom:0px">
+            <tr>
+                <td class="col-6 text-center fw-bold">Каталожное блюдо для сравнения</td>
+                <td class="text-start">{{ dish.dishcatalog_fk }}</td>
+            </tr>
+            <tr>
+                <td class="col-6 text-center fw-bold">Кулинарный класс блюда</td>
+                <td class="text-start">{{ dish.CulinaryClassModel_fk }}</td>
+            </tr>
+            <tr>
+                <td class="text-center fw-bold">Тип кухни</td>
+                <td class="text-start">{{ dish.type_of_kitchen_fk }}</td>
+            </tr>
+            </table>
+{#        </div>#}
+    </div>
+</div>
