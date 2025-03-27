@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 # from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 from django.urls import re_path as url
 # from crudbuilder import urls
 
@@ -21,6 +22,8 @@ from .views import (CafeFormsetView, VisitView, TestView, add_dish_library, Tabl
 app_name = 'core'
 urlpatterns = [
 
+    path('',
+         RedirectView.as_view(url='/cafes/', permanent=True), name='pages-root'),
     path('cafes/', CafesListView.as_view(), name='cafes'),
 
     # url(r'^admin/', include(admin.site.urls)),

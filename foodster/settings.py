@@ -25,9 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4(@m-8td(7q+m-jjzakz5+1ea6gk#ng@i-rt3&_8wu^3749lo7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"  # По умолчанию True (для разработки)
 
-ALLOWED_HOSTS = ['critifood.ru']
+if DEBUG:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+else:
+    ALLOWED_HOSTS = ['critifood.ru']
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Application definition
