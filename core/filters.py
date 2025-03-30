@@ -35,7 +35,7 @@ class BestDishesFilterSet(django_filters.FilterSet):
 
 
 class DishesFilterSet(django_filters.FilterSet):
-    dish_fk = django_filters.CharFilter(field_name="dish_fk__title", lookup_expr='icontains', label='Фильтр по названию блюда')
+    dish_fk = django_filters.CharFilter(field_name="dish_fk__name", lookup_expr='icontains', label='Фильтр по названию блюда')
 
     class Meta:
         model = DishModel

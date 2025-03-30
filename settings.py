@@ -29,11 +29,12 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"  # По умолчанию T
 
 # ALLOWED_HOSTS
 if DEBUG:
-    ALLOWED_HOSTS = ["localhost", "92.255.77.160"]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 else:
-    ALLOWED_HOSTS = ["critifood.ru", "IP-адрес-сервера"]
+    ALLOWED_HOSTS = ["critifood.ru", "92.255.77.160"]
 
-ALLOWED_HOSTS = ['critifood.ru']
+DEBUG = True
+
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Application definition
@@ -321,7 +322,24 @@ DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'JPEG'
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'JPEG': ".jpg"}
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = False
 
-# binguymtwghjdnjz
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django/errors.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 
 
 # from iommi import Style as IOMMIStyle
