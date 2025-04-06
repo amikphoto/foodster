@@ -11,9 +11,11 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav">
                     <a href="{% url 'core:bestdishes' %}" class="nav-item nav-link active">Блюда</a>
-                    <a href="{% url 'core:cafes' %}" class="nav-item nav-link active">Кафе</a>
-                    <a href="{% url 'core:myvisits' %}" class="nav-item nav-link active">Мои посещения</a>
-                    <a href="{% url 'core:dicts' %}" class="nav-item nav-link active">Справочники</a>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'core:cafes' %}" class="nav-item nav-link active">Кафе</a>
+                        <a href="{% url 'core:myvisits' %}" class="nav-item nav-link active">Мои посещения</a>
+                        <a href="{% url 'core:dicts' %}" class="nav-item nav-link active">Справочники</a>
+                    {% endif %}
                 </div>
                 <div class="navbar-nav ms-auto">
                     <div href="{% url 'core:dicts' %}" class="navbar-nav">
@@ -35,7 +37,7 @@
                             <Li>
                                 <form action="{% url 'logout' %}" method="post">
                                   {% csrf_token %}
-                                  <button  class="btn btn-outline-dark col-12 mx-auto" type="submit">Выйти</button>
+                                  <button  class="btn btn-outline-dark col-10 mx-auto d-grid gap-2" type="submit">Выйти</button>
                                 </form>
                             </Li>
                             {#                            <li><a class="dropdown-item" href="{% url 'logout' %}">Выход</a></li>#}

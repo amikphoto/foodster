@@ -1,6 +1,7 @@
 # from iommi import Page, Form, Table, register_search_fields, Column
 from http.client import responses
 
+import django.contrib.auth.models
 from django.db.models import Count, Avg
 # from iommi import EditTable
 # from iommi.views import crud_views
@@ -1009,6 +1010,8 @@ class add_new_dish_collection(EditCollectionView):
         # context['form_collection'].declared_holders['dish_form'].fields['cafe'].queryset = qr
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['visit'].initial = context['dishmodel'].visit_fk.id
 
+        context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['currentuser'].initial = self.request.user.id
+
         return context
 
     def get_success_url(self):
@@ -1113,7 +1116,7 @@ class BestDishesListView(SingleTableMixin, FilterView):
     table_class = BestDishesTable
     # queryset = model.objects.values_list('dish_fk', flat=True).distinct()
     # queryset = model.objects.values('dish_fk').annotate(group_count = Count('pk'))
-    queryset = model.objects.values('dish_fk','dish_fk__name','visit_fk__cafe_fk__title').annotate(group_count=Count('pk'), group_average=Avg('rating')).order_by('-group_average')
+    queryset = model.objects.values('dish_fk','dish_fk__name','visit_fk__cafe_fk','visit_fk__cafe_fk__title').annotate(group_count=Count('pk'), group_average=Avg('rating')).order_by('-group_average')
     # queryset = model.objects.all().distinct('pk')
     paginate_by = 10
     filterset_class = BestDishesFilterSet

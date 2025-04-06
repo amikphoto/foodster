@@ -132,21 +132,8 @@ class DishLibraryModel(models.Model):
 
 class DishModel(models.Model):
 
-    # title = models.CharField(max_length=200)
-    # typeofdish_fk = models.ForeignKey(TypeOfDishes, on_delete=models.CASCADE, related_name='type_of_dish', default="")
-    # dishcatalog_fk = models.ForeignKey(DishCatalog, on_delete=models.CASCADE, related_name='dishcatalog', default="")
-
-    # dish_fk = models.ForeignKey(DishLibraryModel,on_delete=models.CASCADE, related_name='dish')
     dish_fk = models.ForeignKey(DishLibraryModel,on_delete=models.CASCADE, related_name='bestdishes',)
-
-
-    # typeofdish_fk1 = models.ForeignKey(TypeOfDishes, on_delete=models.CASCADE, null=True, related_name='type_of_dish1', default="")
-    # dishcatalog_fk1 = models.ForeignKey(DishCatalog, on_delete=models.CASCADE, null=True, related_name='dishcatalog1', default="")
-    #
-
-    # cafe_fk = models.ForeignKey(CafeModel, on_delete=models.CASCADE)
     visit_fk = models.ForeignKey(VisitModel, on_delete=models.CASCADE, related_name='visit_dishes')
-    # visit_fk = models.ForeignKey(VisitModel, on_delete=models.CASCADE)
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

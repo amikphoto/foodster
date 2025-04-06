@@ -23,7 +23,7 @@ app_name = 'core'
 urlpatterns = [
 
     path('',
-         RedirectView.as_view(url='/cafes/', permanent=True), name='pages-root'),
+         RedirectView.as_view(url='/dishes/', permanent=True), name='pages-root'),
     path('cafes/', CafesListView.as_view(), name='cafes'),
 
     # url(r'^admin/', include(admin.site.urls)),

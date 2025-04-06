@@ -40,8 +40,10 @@
                 <django-formset endpoint="{{ request.path }}" csrf-token="{{ csrf_token }}">
                   {{ form_collection }}
                   <p class="mt-3">
-                    <button type="button" df-click="submit -> proceed" class="btn btn-primary">Сохранить</button>
-                    <button type="button" df-click="reset" class="ms-2 btn btn-warning">Начальные значения</button>
+                      {% if request.user.is_authenticated %}
+                        <button type="button" df-click="submit -> proceed" class="btn btn-primary">Сохранить</button>
+                      {% endif %}  
+                      <button type="button" df-click="reset" class="ms-2 btn btn-warning">Начальные значения</button>
                   </p>
                 </django-formset>
               </div>

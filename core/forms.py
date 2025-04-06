@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.models import ModelForm, ModelChoiceField, construct_instance, model_to_dict
+from django.template.context_processors import request
 from django.urls import reverse
 
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, DishLibraryModel, DishCatalog, VisitImageModel, DishImageModel, CulinaryClassModel, TypeOfKitchen
@@ -207,11 +208,10 @@ class DishLibraryForm(ModelForm):
 class DishForm(ModelForm):
 
     id = IntegerField(required=False, widget=HiddenInput)
+    currentuser = ModelChoiceField(required=False, queryset=CafeModel.objects.all() ,widget=HiddenInput)
 
     dish_info = IntegerField(required=False, widget=HiddenInput)
 
-
-    # cafe = IntegerField(required=False)
     cafe = ModelChoiceField(queryset=CafeModel.objects.all(),
         widget=Selectize(attrs={'disabled':'disabled'}),
         # required=False,
@@ -229,7 +229,9 @@ class DishForm(ModelForm):
         widget=Button(
             action='activate',
             # button_variant=ButtonVariant.SECONDARY,
-            attrs={'class': 'w-100 btn-outline-secondary',}
+            attrs={'class': 'w-100 btn-outline-secondary',
+                   'df-hide': '!DishSet.dish_form.currentuser'
+                   }
         ),
     )
 
@@ -239,6 +241,7 @@ class DishForm(ModelForm):
             action='activate(prefillPartial(DishSet.dish_form.dish_fk))',
             # button_variant=ButtonVariant.SECONDARY,
             attrs={
+                'df-hide': '!DishSet.dish_form.currentuser',
                 'df-disable': '!DishSet.dish_form.dish_fk',
                 'class': 'w-100 btn-outline-secondary',
             }
@@ -273,7 +276,7 @@ class DishForm(ModelForm):
 
 
         # fields = ['title','typeofdish_fk','dishcatalog_fk','description', 'rating','typeofdish_fk1','dishcatalog_fk1',]
-        fields = ['id','cafe','visit','dish_fk','dish_info','add_dish','edit_dish','description','price','rating',]
+        fields = ['id','currentuser','cafe','visit','dish_fk','dish_info','add_dish','edit_dish','description','price','rating',]
         labels = {'dish_fk': 'Название блюда этого заведения','description': 'Описание блюда', 'rating': 'Оценка блюда', 'price': 'Цена блюда' }
 
         widgets = {
@@ -334,7 +337,7 @@ class AddCulinaryClassForm(DialogModelForm):
     changeclass = Activator(
         label="Сохранить",
         widget=Button(
-            attrs={'class': 'w-40 mx-1', },
+            attrs={'class': 'w-40 mx-1'},
             button_variant=ButtonVariant.PRIMARY,
             action='submitPartial -> setFieldValue(add_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id) ->  activate("clear")',
             # action='submitPartial -> setFieldValue(DishSet.edit_dish.dishcatalog_fk, ^dishcatalog_fk_id) -> setFieldValue(add_dish.dishcatalog_fk, ^dishcatalog_fk_id) -> activate("clear")',

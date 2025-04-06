@@ -68,7 +68,17 @@ class BestDishesTable(tables.Table):
     group_average = tables.Column(verbose_name='Средний балл',
                                 )
     visit_fk__cafe_fk__title = tables.Column(verbose_name='Название кафе',
+                    linkify=lambda record: "/cafe/"+str(record.get('visit_fk__cafe_fk')),
                                 )
+
+    # cafe_link = tables.LinkColumn(
+    #     viewname='cafe',
+    #     accessor='visit_fk__cafe_fk__title',  # Для словарей
+    #     args=[tables.A('visit_fk__cafe_fk')],
+    #     verbose_name='Кафе'
+    # )
+
+
     class Meta:
         model = DishModel
         template_name = "django_tables2/bootstrap5_bestdishes.html"
