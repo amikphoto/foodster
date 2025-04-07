@@ -283,7 +283,9 @@ class DishForm(ModelForm):
             'description': Textarea(attrs={'rows': 4}),
             'dish_fk': Selectize(
                 attrs={'hx-get': '/dishinfo','hx-target':'[name="dish_info"]', 'hx-swap': 'outerHTML',
-                        'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed'},
+                        'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed',
+                        'disabled':'disabled',
+                       },
 
         # 'hx-trigger': 'click from:. delay:100ms, load, change changed'},
 
