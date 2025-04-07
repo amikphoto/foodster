@@ -88,7 +88,7 @@ class VisitImageModel(models.Model):
 
     title = models.CharField(max_length=200, default='')
     # image = models.ImageField(upload_to='media')
-    image = ResizedImageField(upload_to='media/visits/%Y/%m/%d')
+    image = ResizedImageField(upload_to='media/visits/%Y.%m.%d')
     visit_fk = models.ForeignKey(VisitModel, on_delete=models.CASCADE, related_name='visit_images',)
 
     def __str__(self):
@@ -167,7 +167,7 @@ class DishImageModel(models.Model):
 
     title = models.CharField(max_length=200, default='')
     # image = models.ImageField(upload_to='media')
-    image = ResizedImageField(upload_to='media/dishes/%Y/%m/%d')
+    image = ResizedImageField(upload_to='media/dishes/%Y.%m.%d')
     dish_fk = models.ForeignKey(DishModel, on_delete=models.CASCADE, related_name='dish_images',)
 
     def __str__(self):
