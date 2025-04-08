@@ -62,7 +62,8 @@ class TypeTable(tables.Table):
 
 class BestDishesTable(tables.Table):
     dish_fk__name = tables.Column(verbose_name='Наименование блюда',
-                                )
+                                  linkify=lambda record: "/visitlist/" + str(record.get('dish_fk')),
+                                  )
     group_count =  tables.Column(verbose_name='Количество',
                                 )
     group_average = tables.Column(verbose_name='Средний балл',
@@ -109,6 +110,13 @@ class DishesTable(tables.Table):
         #     ("title", "dishcatalog_fk", "type_of_kitchen_fk")
         # }
         fields = ['id','rating','rating2']
+
+class VisitsListTable(tables.Table):
+
+    class Meta:
+        model = VisitModel
+        template_name = "django_tables2/bootstrap5_visits_list.html"
+        fields = ['data', 'description','average_dish_rating','user','register']
 
 
 class CafesTable(tables.Table):

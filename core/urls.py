@@ -12,6 +12,7 @@ from .views import (CafeFormsetView, VisitView, TestView, add_dish_library, Tabl
                     DishesListView, add_new_dish, add_new_dish_collection, TypeDictListView,
                     DictView, TypeEditTableView, TypeDictUpdateListView, ClassDictListView, ClassDictUpdateListView,
                     ClassEditTableView, BestDishesListView, MyVisitsListView,
+                    VisitsList
                     # iommitest
                     )
 # from iommi import Form
@@ -68,6 +69,7 @@ urlpatterns = [
 
     path('myvisits/', MyVisitsListView.as_view(), name='myvisits'),
 
+    path('visitlist/<int:pk>/', VisitsList.as_view(), name='visitlist'),
 ]
 
 if settings.DEBUG:

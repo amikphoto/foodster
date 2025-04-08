@@ -22,7 +22,7 @@ from django.utils.module_loading import import_string
 from django.http import HttpResponse
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
-from .tables import DishesTable, CafesTable, VisitsTable, MyVisitsTable, TypeTable, ClassTable, BestDishesTable
+from .tables import DishesTable, CafesTable, VisitsTable, MyVisitsTable, TypeTable, ClassTable, BestDishesTable, VisitsListTable
 from .filters import DishLibraryFilterSet, CafesLibraryFilterSet, VisitsFilterSet, MyVisitsFilterSet, DishesFilterSet, KitchenTypeFilterSet, ClassFilterSet, BestDishesFilterSet
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
@@ -1147,3 +1147,26 @@ class MyVisitsListView(SingleTableMixin, FilterView):
             template_name = "my_visits_list.html"
 
         return template_name
+
+class VisitsList(SingleTableMixin, FilterView):
+    model = VisitModel
+    table_class = VisitsListTable
+
+    def get_queryset(self):
+        # queryset = VisitModel.objects.filter(visit_dishes__id=self.kwargs.get('pk')).distinct()
+        queryset = VisitModel.objects.filter(visit_dishes__dish_fk__id=self.kwargs.get('pk'))
+
+        return queryset
+
+    def get_template_names(self):
+        if self.request.htmx:
+            template_name = "dish_visits_list_htmx.html"
+        else:
+            template_name = "dish_visits_list.html"
+
+        return template_name
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dish'] = DishModel.objects.get(pk=self.kwargs.get('pk'))
+        return context
