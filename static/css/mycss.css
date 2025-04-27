@@ -563,3 +563,34 @@ div#columns:hover figure:not(:hover) {
     border-radius: 8px;
     padding: 20px;
 }
+
+
+#cardSlider {
+  --f-carousel-slide-width: 100%;
+  --f-carousel-spacing: 0;
+  --f-carousel-slide-padding: 0 1rem;
+
+  --f-button-prev-pos: 2rem;
+  --f-button-next-pos: 2rem;
+
+  --f-button-bg: #fff;
+  --f-button-color: #333;
+
+  --f-button-width: 32px;
+  --f-button-height: 32px;
+  --f-button-border-radius: 50%;
+
+  --f-button-svg-width: 17px;
+  --f-button-svg-height: 17px;
+  --f-button-svg-stroke-width: 1.5;
+
+  --f-button-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+    rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+@media screen and (min-width: 640px) {
+  #cardSlider {
+    --f-carousel-slide-width: calc(100% / 3);
+  }
+}

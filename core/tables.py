@@ -1,5 +1,7 @@
 import django_tables2 as tables
-from .models import DishLibraryModel, CafeModel, VisitModel, DishModel, TypeOfKitchen, CulinaryClassModel
+from .models import DishLibraryModel, CafeModel, VisitModel, DishModel, TypeOfKitchen, CulinaryClassModel, DishImageModel
+from django.utils.safestring import mark_safe
+from easy_thumbnails.files import get_thumbnailer
 from django.utils.html import format_html
 from django.urls import reverse
 from django_tables2.utils import A
@@ -61,6 +63,19 @@ class TypeTable(tables.Table):
                       }}
 
 class BestDishesTable(tables.Table):
+
+    # Новый столбец для изображений
+    image = tables.Column(verbose_name="Изображение", empty_values=())
+
+    def render_image(self, value, record):
+        # Получаем первое изображение для данного блюда
+        first_image = DishImageModel.objects.filter(dish_fk__dish_fk=record['dish_fk']).last()
+        if first_image:
+            thumbnailer = get_thumbnailer(first_image.image)
+            thumbnail = thumbnailer.get_thumbnail({'size': (200, 200), 'crop': True})
+            return mark_safe(f'<a href="/dishesphotos/{record['dish_fk']}"><img src="{thumbnail.url}" class="rounded" alt="Dish Image"></a>')
+        return mark_safe('<img src="/media/media/no_photo.jpg" alt="No Image" class="rounded" height="200">')
+
     dish_fk__name = tables.Column(verbose_name='Наименование блюда',
                                   linkify=lambda record: "/visitlist/" + str(record.get('dish_fk')),
                                   )
@@ -72,18 +87,10 @@ class BestDishesTable(tables.Table):
                     linkify=lambda record: "/cafe/"+str(record.get('visit_fk__cafe_fk')),
                                 )
 
-    # cafe_link = tables.LinkColumn(
-    #     viewname='cafe',
-    #     accessor='visit_fk__cafe_fk__title',  # Для словарей
-    #     args=[tables.A('visit_fk__cafe_fk')],
-    #     verbose_name='Кафе'
-    # )
-
-
     class Meta:
         model = DishModel
         template_name = "django_tables2/bootstrap5_bestdishes.html"
-        fields = ['dish_fk__name','visit_fk__cafe_fk__title','group_count','group_average']
+        fields = ['image','dish_fk__name','visit_fk__cafe_fk__title','group_count','group_average']
 
 
 
@@ -113,6 +120,8 @@ class DishesTable(tables.Table):
 
 class VisitsListTable(tables.Table):
 
+    data = tables.Column(linkify=lambda record: record.get_absolute_url())
+    description = tables.Column(linkify=lambda record: record.get_absolute_url())
     class Meta:
         model = VisitModel
         template_name = "django_tables2/bootstrap5_visits_list.html"

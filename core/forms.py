@@ -105,7 +105,7 @@ class dishTextarea(Widget):
 
 class CafeForm(ModelForm):
 
-  class Meta:
+    class Meta:
       model = CafeModel
       fields = ['title','content','typeofkitchen','address',]
       labels = {'title': 'Название', 'content': 'Контент', 'typeofkitchen': 'Специфика заведения', 'address': 'Адрес',}
@@ -145,6 +145,7 @@ class CafeImageCollection(FormCollection):
     # legend = 'Фотографии'
     image_form = CafeImageForm()
     related_field = 'cafe_fk'
+
 
     def retrieve_instance(self, data):
         if data := data.get('image_form'):

@@ -1,0 +1,53 @@
+{% extends "minimal.html" %}
+{% load thumbnail %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+        {% for image in images %}
+            {% thumbnail image.image "200x200" crop="smart" as im %}
+            <div class="position-relative">
+                <!-- Основная кликабельная область -->
+                <a
+                    class="d-block image-wrapper"
+                    style="min-width: 200px; max-width: 300px"
+                    data-src="/media/{{ image.image }}" 
+                    data-fancybox="gallery"
+                    data-caption='
+                        <a href="/cafe/{{ image.dish_fk.visit_fk.cafe_fk.id }}/{{ image.dish_fk.visit_fk.id }}/{{ image.dish_fk.id }}" 
+                           class="btn btn-success btn-sm shadow-sm"
+                           onclick="event.stopPropagation()">
+                            <i class="bi bi-info-circle"></i> Перейти к блюду
+                        </a>
+                    '>
+                    
+                    <img
+                        src="{{ im.url }}"
+                        class="rounded"
+                        width="300"
+                        height="300"
+                        alt="Square image">
+                </a>
+
+                <!-- Кнопка поверх изображения с корректным позиционированием -->
+                <div class="position-absolute top-0 start-0 p-1 ms-2 mt-2" style="pointer-events: none; z-index: 2">
+                    <a href="/cafe/{{ image.dish_fk.visit_fk.cafe_fk.id }}/{{ image.dish_fk.visit_fk.id }}/{{ image.dish_fk.id }}"
+                       class="btn btn-success btn-sm shadow-sm"
+                       style="pointer-events: auto"
+                       onclick="event.stopPropagation()">
+                        <i class="bi bi-info-circle"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.image-wrapper {
+    position: relative;
+    z-index: 1;
+}
+</style>
+{% endblock %}

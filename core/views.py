@@ -1,34 +1,19 @@
-# from iommi import Page, Form, Table, register_search_fields, Column
-from http.client import responses
-
-import django.contrib.auth.models
 from django.db.models import Count, Avg
-# from iommi import EditTable
-# from iommi.views import crud_views
-from django.urls import reverse
 from django.views.generic import UpdateView, FormView, TemplateView
 from django.forms.models import construct_instance
-from formset.upload import FileUploadMixin
 from formset.views import FormViewMixin, IncompleteSelectResponseMixin
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
-# from django.views.decorators.http import require_http_methods
-from .models import CafeModel, VisitModel, DishModel, CafeImageModel, TypeOfDishes, DishCatalog, DishLibraryModel, TypeOfKitchen, CulinaryClassModel
+from .models import CafeModel, VisitModel, DishModel, CafeImageModel, TypeOfDishes, DishCatalog, DishLibraryModel, \
+    TypeOfKitchen, CulinaryClassModel, DishImageModel
 from .forms import CafeFormset,VisitFormset, CafeImageForm, DishForm, VisitForm, CafeForm, testform, DishLibraryForm, DishFormset
 from formset.views import FormCollectionView, EditCollectionView, FormViewMixin, FormView
 from django.http.response import JsonResponse, HttpResponseBadRequest
-from formset.utils import FormMixin
-from django.utils.module_loading import import_string
-from django.http import HttpResponse
-from django.views.generic import ListView
-from django_tables2 import SingleTableView
 from .tables import DishesTable, CafesTable, VisitsTable, MyVisitsTable, TypeTable, ClassTable, BestDishesTable, VisitsListTable
 from .filters import DishLibraryFilterSet, CafesLibraryFilterSet, VisitsFilterSet, MyVisitsFilterSet, DishesFilterSet, KitchenTypeFilterSet, ClassFilterSet, BestDishesFilterSet
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.contrib.auth.models import Permission
-from dal import autocomplete
 
 
 def dishinfo(request):
@@ -809,7 +794,6 @@ class Cafe_cab(EditCollectionView):
         'force_submission': False,
     }
 
-
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
         slug = self.kwargs.get(self.slug_url_kwarg)
@@ -819,7 +803,16 @@ class Cafe_cab(EditCollectionView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(EditCollectionView, self).get_context_data(*args, **kwargs)
+        context['images'] = CafeImageModel.objects.filter(cafe_fk=self.kwargs['pk'])
         context['way'] = self.request.GET.get("way")
+
+        if not self.request.user.is_authenticated:
+                if 'cafe_images' in context['form_collection'].declared_holders:
+                    context['form_collection'].declared_holders.pop('cafe_images')
+        else:
+            if not (context['visit'].user == self.request.user) or not (self.request.user.is_staff):
+                if 'cafe_images' in context['form_collection'].declared_holders:
+                    context['form_collection'].declared_holders.pop('cafe_images')
         return context
 
     def get_success_url(self):
@@ -975,20 +968,6 @@ class add_new_dish_collection(EditCollectionView):
     model = DishModel
     collection_class = DishFormset
     template_name = "add_new_dish_collection.html"
-    # success_url = "/cafes/"
-
-    # def get_queryset(self):
-    #     qs = super().get_queryset()
-    #     # filter by a variable captured from url, for example
-    #     # return qs.filter(name__startswith=self.kwargs['name'])
-    #
-    #     return qs
-
-    # def get_initial(self):
-    #     initial = super(add_new_dish_collection, self).get_initial()
-    #     # initial['cafe'] = self.kwargs['cpk']
-    #     return initial
-
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
@@ -1005,12 +984,22 @@ class add_new_dish_collection(EditCollectionView):
         context['visit'] = context['dishmodel'].visit_fk
         # context['cafe'] = context['dishmodel'].visit_fk.cafe_fk
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['cafe'].initial = context['dishmodel'].visit_fk.cafe_fk.id
+        context['images'] = DishImageModel.objects.filter(dish_fk=self.kwargs['pk'])
+
         # qr = context['form_collection'].declared_holders['dish_form'].fields['cafe'].queryset
         # qr = qr.filter(id=context['dishmodel'].visit_fk.cafe_fk.id)
         # context['form_collection'].declared_holders['dish_form'].fields['cafe'].queryset = qr
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['visit'].initial = context['dishmodel'].visit_fk.id
 
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['currentuser'].initial = self.request.user.id
+
+        if not self.request.user.is_authenticated:
+                if 'dish_images' in context['form_collection'].declared_holders['DishSet'].declared_holders:
+                    context['form_collection'].declared_holders['DishSet'].declared_holders.pop('dish_images')
+        else:
+            if not (context['visit'].user == self.request.user) or not (self.request.user.is_staff):
+                if 'dish_images' in context['form_collection'].declared_holders['DishSet'].declared_holders:
+                    context['form_collection'].declared_holders['DishSet'].declared_holders.pop('dish_images')
 
         return context
 
@@ -1169,4 +1158,13 @@ class VisitsList(SingleTableMixin, FilterView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context['dish'] = DishModel.objects.get(pk=self.kwargs.get('pk'))
+        return context
+
+class DishPhotosList(TemplateView):
+    model = DishImageModel
+    template_name = "dishesphotoslist.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['images'] = DishImageModel.objects.filter(dish_fk__dish_fk=self.kwargs['pk'])
         return context

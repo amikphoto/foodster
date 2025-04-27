@@ -1,12 +1,36 @@
 {% extends "minimal.html" %}
 {% load formsetify %}
 {% load render_table from django_tables2 %}
+{% load thumbnail %}
 
 
 {%  block content %}
 
     <div id="cab">
-        <div id="capbtitle" class="container">
+        <br>
+        <div class="container mt-5">
+            <div id="cardSlider" class="f-carousel mb-8 py-5">
+                <div class="f-carousel__viewport">
+                    {% for image in images %}
+                        {% thumbnail image.image 400x400 crop="smart" upscale=True as im %}
+                            <figure class="f-carousel__slide">
+                                <img
+                                    width=500
+                                    height=500
+                                    data-fancybox="gallery"
+                                    data-src="/media/{{ image.image }}"
+                                    data-lazy-src="{{ im.url }}"
+                                    class="mb-4 img-fluid rounded"
+                                    alt="Square image"
+                                    loading="lazy"
+                                >
+                            </figure>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div id="cabtitle" class="container">
+
             <p>
                 Кабинет кафе: {{ object }}
             </p>
@@ -46,7 +70,9 @@
                         {% if perms.core.add_cafemodel %}
                            <button type="button" df-click="submit -> proceed('/cafes/')" class="btn btn-primary">Сохранить</button>
                         {% endif %}
-                        <button type="button" df-click="reset" class="ms-2 btn btn-warning">Начальные значения</button>
+                        {% if request.user.is_authenticated %}
+                            <button type="button" df-click="reset" class="ms-2 btn btn-warning">Начальные значения</button>
+                        {% endif %}
                       </p>
                     </django-formset>
                   </div>
@@ -61,4 +87,21 @@
             </div>
         </div>
     </div>
+    <script>
+        new Carousel(document.getElementById('cardSlider'), {
+          Navigation: {
+            prevTpl:
+              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M11 5l-7 7 7 7"/><path d="M4 12h16"/></svg>',
+            nextTpl:
+              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M13 5l7 7-7 7"/></svg>',
+          },
+
+          infinite: true,
+          center: false,
+          slidesPerPage: 'auto',
+          transition: false,
+        });
+
+    </script>
+        
 {% endblock %}
