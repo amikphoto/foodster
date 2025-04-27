@@ -7,13 +7,14 @@
 
 
 {% block base_css %}
-{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">#}
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
     <script src="{% url 'javascript-catalog' %}"></script>
 
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous" media="screen">
     <link href="{% static 'css/bootstrap-utilities.css' %}" rel="stylesheet" crossorigin="anonymous" media="screen">
     <link href="{% static 'formset/css/bootstrap5-extra.css' %}" rel="stylesheet" crossorigin="anonymous" media="screen">
     <link href="{% static 'formset/css/collections.css' %}" rel="stylesheet" crossorigin="anonymous" media="screen">
+    <link href="{% static 'css/mycss.css' %}" rel="stylesheet" crossorigin="anonymous">
     <link href="{% static 'css/star.css' %}" rel="stylesheet" crossorigin="anonymous">
     <link href="{% static 'css/fancybox.css' %}" rel="stylesheet" crossorigin="anonymous"/>
     <link href="{% static 'css/carousel.css' %}" rel="stylesheet" crossorigin="anonymous"/>
