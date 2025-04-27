@@ -810,7 +810,7 @@ class Cafe_cab(EditCollectionView):
                 if 'cafe_images' in context['form_collection'].declared_holders:
                     context['form_collection'].declared_holders.pop('cafe_images')
         else:
-            if not (context['visit'].user == self.request.user) or not (self.request.user.is_staff):
+            if not self.request.user.is_staff:
                 if 'cafe_images' in context['form_collection'].declared_holders:
                     context['form_collection'].declared_holders.pop('cafe_images')
         return context

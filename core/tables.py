@@ -73,7 +73,7 @@ class BestDishesTable(tables.Table):
         if first_image:
             thumbnailer = get_thumbnailer(first_image.image)
             thumbnail = thumbnailer.get_thumbnail({'size': (200, 200), 'crop': True})
-            return mark_safe(f'<a href="/dishesphotos/{record['dish_fk']}"><img src="{thumbnail.url}" class="rounded" alt="Dish Image"></a>')
+            return mark_safe(f'<a href="/dishesphotos/{record["dish_fk"]}"><img src="{thumbnail.url}" class="rounded" alt="Dish Image"></a>')
         return mark_safe('<img src="/media/media/no_photo.jpg" alt="No Image" class="rounded" height="200">')
 
     dish_fk__name = tables.Column(verbose_name='Наименование блюда',
