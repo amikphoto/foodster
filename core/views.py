@@ -830,7 +830,8 @@ class VisitCab(EditCollectionView):
         context = super(EditCollectionView, self).get_context_data(*args, **kwargs)
         context['way'] = self.request.GET.get("way")
         context['cafe_fk'] = self.kwargs.get('cpk')
-        context['images'] = VisitImageModel.objects.filter(visit_fk=self.kwargs['pk'])
+        if 'pk' in self.kwargs:
+            context['images'] = VisitImageModel.objects.filter(visit_fk=self.kwargs['pk'])
 
         if not self.request.user.is_authenticated:
             context['form_collection'].initial.pop('visit_images')
