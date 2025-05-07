@@ -5,7 +5,7 @@ from formset.views import FormViewMixin, IncompleteSelectResponseMixin
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, TypeOfDishes, DishCatalog, DishLibraryModel, \
-    TypeOfKitchen, CulinaryClassModel, DishImageModel
+    TypeOfKitchen, CulinaryClassModel, DishImageModel, VisitImageModel
 from .forms import CafeFormset,VisitFormset, CafeImageForm, DishForm, VisitForm, CafeForm, testform, DishLibraryForm, DishFormset
 from formset.views import FormCollectionView, EditCollectionView, FormViewMixin, FormView
 from django.http.response import JsonResponse, HttpResponseBadRequest
@@ -803,17 +803,18 @@ class Cafe_cab(EditCollectionView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(EditCollectionView, self).get_context_data(*args, **kwargs)
-        context['images'] = CafeImageModel.objects.filter(cafe_fk=self.kwargs['pk'])
+        if 'pk' in self.kwargs:
+            context['images'] = CafeImageModel.objects.filter(cafe_fk=self.kwargs['pk'])
+
         context['way'] = self.request.GET.get("way")
 
         if not self.request.user.is_authenticated:
-                if 'cafe_images' in context['form_collection'].declared_holders:
-                    context['form_collection'].declared_holders.pop('cafe_images')
+            context['form_collection'].initial.pop('cafe_images')
         else:
             if not self.request.user.is_staff:
-                if 'cafe_images' in context['form_collection'].declared_holders:
-                    context['form_collection'].declared_holders.pop('cafe_images')
+                context['form_collection'].initial.pop('cafe_images')
         return context
+
 
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER')
@@ -829,7 +830,15 @@ class VisitCab(EditCollectionView):
         context = super(EditCollectionView, self).get_context_data(*args, **kwargs)
         context['way'] = self.request.GET.get("way")
         context['cafe_fk'] = self.kwargs.get('cpk')
+        context['images'] = VisitImageModel.objects.filter(visit_fk=self.kwargs['pk'])
+
+        if not self.request.user.is_authenticated:
+            context['form_collection'].initial.pop('visit_images')
+        else:
+            if not self.request.user.is_staff:
+                context['form_collection'].initial.pop('visit_images')
         return context
+
 
     def get_success_url(self):
         # return "/cafe/"+str(VisitModel.objects.get(pk=self.kwargs.get('cpk')).cafe_fk.id)+"/"+str(VisitModel.objects.get(pk=self.kwargs.get('cpk')).id)+"/?way = list"
@@ -994,13 +1003,10 @@ class add_new_dish_collection(EditCollectionView):
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['currentuser'].initial = self.request.user.id
 
         if not self.request.user.is_authenticated:
-                if 'dish_images' in context['form_collection'].declared_holders['DishSet'].declared_holders:
-                    context['form_collection'].declared_holders['DishSet'].declared_holders.pop('dish_images')
+            context['form_collection'].initial['DishSet'].pop('dish_images')
         else:
-            if not (context['visit'].user == self.request.user) or not (self.request.user.is_staff):
-                if 'dish_images' in context['form_collection'].declared_holders['DishSet'].declared_holders:
-                    context['form_collection'].declared_holders['DishSet'].declared_holders.pop('dish_images')
-
+            if not (context['visit'].user==self.request.user) or not (self.request.user.is_superuser):
+                context['form_collection'].initial['DishSet'].pop('dish_images')
         return context
 
     def get_success_url(self):

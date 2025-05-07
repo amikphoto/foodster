@@ -1,17 +1,45 @@
 {% extends "minimal.html" %}
 {% load formsetify %}
 {% load render_table from django_tables2 %}
+{% load thumbnail %}
+
 
 {%  block content %}
     <div id="cab">
-        <div id="capbtitle" class="container">
-            <p>
-                Кабинет кафе: {{ object.cafe_fk }}
-            </p>
+        <div class="bg-secondary">
+        <div class="container py-3">
+            <div id="cardSlider" class="f-carousel mb-8 py-3 bp-0">
+                <div class="f-carousel__viewport">
+                    {% for image in images %}
+                        {% thumbnail image.image 400x400 crop="smart" upscale=True as im %}
+                            <figure class="f-carousel__slide">
+                                <img
+                                    width=500
+                                    height=500
+                                    data-fancybox="gallery"
+                                    data-src="/media/{{ image.image }}"
+                                    data-lazy-src="{{ im.url }}"
+                                    class="mb-4 img-fluid rounded"
+                                    alt="Square image"
+                                    loading="lazy"
+                                >
+                            </figure>
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="capbtitle" class="container">
+                <p>
+                    <h3 class="text-center">
+                    Кабинет кафе: {{ object.cafe_fk }}
+                    </h3>
+                </p>
+            </div>
         </div>
+        </div>
+    
 
     <nav>
-        <div class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+        <div class="nav nav-tabs nav-justified custom_tab_style1" id="myTab" role="tablist">
             <a href="/cafe/{{ visitmodel.cafe_fk.id }}/?way=list" class="nav-link" id="back-tab" type="button" role="tab" aria-controls="home" aria-selected="true">Назад</a>
             {% if way == 'list' %}
             <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Описание визита</button>
@@ -60,5 +88,28 @@
         </div>
     </div>
     </div>
+    <script>
+        new Carousel(document.getElementById('cardSlider'), {
+          Navigation: {
+            prevTpl:
+              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M11 5l-7 7 7 7"/><path d="M4 12h16"/></svg>',
+            nextTpl:
+              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M13 5l7 7-7 7"/></svg>',
+          },
+
+          infinite: true,
+          center: false,
+          slidesPerPage: 'auto',
+          transition: false,
+        });
+
+        const isStaff = {{ request.user.is_staff|yesno:"true,false" }};         
+        document.addEventListener('DOMContentLoaded', function () {
+          if (!isStaff) {
+              const elements = document.querySelectorAll('[title="Add"].add-collection');
+              elements.forEach(el => el.remove());
+          }
+        });        
+    </script>
 
 {% endblock %}

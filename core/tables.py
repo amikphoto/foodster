@@ -163,7 +163,7 @@ class VisitsTable(tables.Table):
     class Meta:
         model = VisitModel
         template_name = "django_tables2/bootstrap5_visits.html"
-        fields = ['data', 'description', 'average_dish_rating']
+        fields = ['data', 'user', 'description', 'average_dish_rating']
 
 class MyVisitsTable(tables.Table):
 

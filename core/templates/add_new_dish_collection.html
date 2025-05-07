@@ -4,9 +4,10 @@
 {% load thumbnail %}
 
 {%  block content %}
-    <br>
-    <div class="container">
-        <div id="cardSlider" class="f-carousel mb-8 py-5">
+    
+    <div class="wrapper">
+    <div class="bg-secondary">
+        <div id="cardSlider" class="f-carousel mb-8 py-5 container">
             <div class="f-carousel__viewport">
                 {% for image in images %}
                     {% thumbnail image.image 400x400 crop="smart" upscale=True as im %}
@@ -25,6 +26,9 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
+
+    <div class="container">
 
 {#        <p> кафе: {{ visit.cafe_fk }}, блюда для визита: {{ visit }}#}
 {#        </p>#}
@@ -48,6 +52,7 @@
                 </p>
             </django-formset>
     </div>
+    </div>
     <script>
         new Carousel(document.getElementById('cardSlider'), {
           Navigation: {
@@ -61,6 +66,14 @@
           center: false,
           slidesPerPage: 'auto',
           transition: false,
+        });
+
+        const isStaff = {{ request.user.is_staff|yesno:"true,false" }};
+        document.addEventListener('DOMContentLoaded', function () {
+          if (!isStaff) {
+              const elements = document.querySelectorAll('[title="Add"].add-collection');
+              elements.forEach(el => el.remove());
+          }
         });
 
     </script>

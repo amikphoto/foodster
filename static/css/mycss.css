@@ -589,6 +589,44 @@ div#columns:hover figure:not(:hover) {
     rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 }
 
+.custom_tab_style1.nav-tabs {
+  background-color: #6c757d;
+  border-bottom: 2px solid #212529;
+}
+
+.custom_tab_style1.nav-tabs .nav-link {
+  color: #ffffff;
+  margin-bottom: -2px;
+  padding: 10px 25px;
+  border-width: 2px;
+}
+
+.custom_tab_style1 .nav-item.show .nav-link,
+.custom_tab_style1 .nav-link.active {
+  color: #212529;
+  background-color: #ffffff;
+  border-width: 2px;
+  border-color:
+#212529
+#212529
+#ffffff;
+}
+
+.custom_tab_style1 .nav-link:focus,
+.custom_tab_style1 .nav-link:hover {
+  color: #000000;
+  border-width: 2px;
+  border-color:
+#212529
+#212529
+#ffffff;
+    background-color: #ffffff;
+}
+
+.nav-tabs {
+    --bs-border-width: 0px
+}
+
 @media screen and (min-width: 640px) {
   #cardSlider {
     --f-carousel-slide-width: calc(100% / 3);

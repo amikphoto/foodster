@@ -69,7 +69,7 @@ class VisitModel(models.Model):
     cafe_fk = models.ForeignKey(CafeModel, on_delete=models.CASCADE)
     description = models.TextField(verbose_name="Описание визита")
     average_dish_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="Рейтинг блюд визита")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     register = models.BooleanField(default=True)
 
     def __str__(self):

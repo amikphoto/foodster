@@ -7,9 +7,9 @@
 {%  block content %}
 
     <div id="cab">
-        <br>
-        <div class="container mt-5">
-            <div id="cardSlider" class="f-carousel mb-8 py-5">
+        <div class="bg-secondary">
+        <div class="container py-3">
+            <div id="cardSlider" class="f-carousel mb-8 py-3 pb-0">
                 <div class="f-carousel__viewport">
                     {% for image in images %}
                         {% thumbnail image.image 400x400 crop="smart" upscale=True as im %}
@@ -29,15 +29,14 @@
                 </div>
             </div>
         </div>
-        <div id="cabtitle" class="container">
-
-            <p>
-                Кабинет кафе: {{ object }}
-            </p>
         </div>
-
+{#        <div id="cabtitle" class="container">#}
+{#            <H5>#}
+{#                Кабинет кафе: {{ object }}#}
+{#            </H5>#}
+{#        </div>#}
         <nav>
-            <div class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+            <div class="nav nav-tabs nav-justified custom_tab_style1" id="myTab" role="tablist">
                 <a href="/cafes/" class="nav-link" id="back-tab" type="button" role="tab" aria-controls="home" aria-selected="true">Назад</a>
                 {% if way == 'list' %}
                 <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Карточка кафе</button>
@@ -56,10 +55,10 @@
                 <div id="home" class="container tab-pane show active" role="tabpanel" aria-labelledby="home-tab">
             {% endif %}
                   <div>
-                  {% if add %}    
-                    <h2 class="modal-title">Новое заведение</h2>
+                  {% if add %}
+                      <p></p><h3 class="modal-title text-center">Новое заведение</h3>
                   {% else %}
-                    <h2 class="modal-title">{{ object }}</h2>
+                      <p></p><h3 class="modal-title text-center">Кабинет заведения: {{ object }}</h3>
                   {% endif %}
                   </div>
                   <div class="modal-body">
@@ -102,6 +101,13 @@
           transition: false,
         });
 
+        const isStaff = {{ request.user.is_staff|yesno:"true,false" }};         
+        document.addEventListener('DOMContentLoaded', function () {
+          if (!isStaff) {
+              const elements = document.querySelectorAll('[title="Add"].add-collection');
+              elements.forEach(el => el.remove());
+          }
+        });        
     </script>
         
 {% endblock %}
