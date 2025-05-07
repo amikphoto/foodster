@@ -994,7 +994,8 @@ class add_new_dish_collection(EditCollectionView):
         context['visit'] = context['dishmodel'].visit_fk
         # context['cafe'] = context['dishmodel'].visit_fk.cafe_fk
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['cafe'].initial = context['dishmodel'].visit_fk.cafe_fk.id
-        context['images'] = DishImageModel.objects.filter(dish_fk=self.kwargs['pk'])
+        if 'pk' in self.kwargs:
+            context['images'] = DishImageModel.objects.filter(dish_fk=self.kwargs['pk'])
 
         # qr = context['form_collection'].declared_holders['dish_form'].fields['cafe'].queryset
         # qr = qr.filter(id=context['dishmodel'].visit_fk.cafe_fk.id)
