@@ -1,5 +1,5 @@
 <!DOCTYPE html>{% load cms_tags menu_tags sekizai_tags static i18n %}{% spaceless %}
-    <html lang="{{ LANGUAGE_CODE }}">
+    <html lang="{{ LANGUAGE_CODE }}" style="height: 100%;">
         <head>
             <meta charset="utf-8"/>
             <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -19,14 +19,34 @@
             {% block base_css %}{% endblock %}
 {% endspaceless %}{% render_block 'css' %}{% spaceless %}
     {% block page_head %}{% endblock %}
+        <style>
+            /* Добавляем эти стили */
+            html, body {
+                height: 100%;
+                margin: 0;
+            }
+            body {
+                display: flex;
+                flex-direction: column;
+            }
+            main {
+                flex: 1 0 auto; /* Растягивается на всё доступное пространство */
+            }
+            footer {
+                flex-shrink: 0; /* Не сжимается */
+            }
+        </style>
+
     </head>
     <body {% block body_attrs %}{% endblock %}>
 {% endspaceless %}{% spaceless %}
     {% block navbar %}{% endblock %}
     {% include 'navbar.html' %}
+    <main>
     {% block content %}
         {% placeholder "Content" %}
     {% endblock content %}
+    </main>
     {% block footer %}{% endblock %}
     {% include 'footer.html' %}
     {% block modal %}
