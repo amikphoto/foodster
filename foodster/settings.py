@@ -205,6 +205,8 @@ TEMPLATES = [
 
                 'cms.context_processors.cms_settings',
                 'sekizai.context_processors.sekizai',
+                'core.context_processors.site_settings',
+
             ],
         },
     },
