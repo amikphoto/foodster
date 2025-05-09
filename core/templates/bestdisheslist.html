@@ -33,6 +33,38 @@
     <div class="container h-auto">
         {% render_table table %}
     </div>
+
+    <script>
+        const textMapping = {
+            'Наименование блюда': 'Блюдо',
+            'Количество': 'Кол-во',
+            'Средний балл': 'Оценка'
+        };
+        
+        function updateHeaderTexts() {
+            const links = document.querySelectorAll('th.orderable a');
+
+            links.forEach(link => {
+                // Если ещё не сохранили оригинал — сохраняем
+                if (!link.dataset.originalText) {
+                    link.dataset.originalText = link.textContent.trim();
+                }
+
+                const originalText = link.dataset.originalText;
+                const shortText = textMapping[originalText];
+
+                if (shortText !== undefined) {
+                    if (window.innerWidth < 686) {
+                        link.textContent = shortText;
+                    } else {
+                        link.textContent = originalText;
+                    }
+                }
+            });
+        }
+        window.addEventListener('load', updateHeaderTexts);
+        window.addEventListener('resize', updateHeaderTexts);
+    </script>
     
 {% endblock %}
 
