@@ -1,3 +1,18 @@
 __pycache__/
 .gitignore
 *.sqlite3
+
+# Файлы окружения
+.env
+.env.local
+
+# Логи и базы данных
+*.log
+
+# Папки зависимостей
+node_modules/
+vendor/
+.venv/
+
+# Миграции (пример для Django)
+*/migrations/*
