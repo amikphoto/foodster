@@ -13,7 +13,7 @@ class Profile(models.Model):
     slug = models.SlugField(verbose_name='URL', max_length=255, blank=True, unique=True)
     avatar = models.ImageField(
         verbose_name='Аватар',
-        upload_to='images/avatars/%Y/%m/%d/',
+        upload_to='images/avatars/',
         default='images/avatars/default.jpg',
         blank=True,
         validators=[FileExtensionValidator(allowed_extensions=('png', 'jpg', 'jpeg'))])

@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import CafeModel, CafeImageModel, VisitModel, DishModel, TypeOfDishes, DishCatalog, DishLibraryModel, TypeOfKitchen, CulinaryClassModel
+from .models import (CafeModel, CafeImageModel, VisitModel, DishModel, TypeOfDishes,
+                     DishCatalog, DishLibraryModel, TypeOfKitchen, CulinaryClassModel,
+                     SiteSettings)
 # Register your models here.
 
 admin.site.register(VisitModel)
@@ -19,3 +21,10 @@ class GalleryInLine(admin.TabularInline):
 @admin.register(CafeModel)
 class CafeAdmin(admin.ModelAdmin):
     inlines = [GalleryInLine,]
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        # Запрещаем создавать новые записи
+        return False

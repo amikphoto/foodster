@@ -3,8 +3,12 @@
 <header>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-{#        <div class="container-fluid">#}
-            <a href="#" class="navbar-brand">CritiFood</a>
+{#            <a href="/" class="navbar-brand">CritiFood</a>#}
+            <a href="/" class="navbar-brand">
+                <img src="{% static 'favicon.ico' %}" alt="Logo" class="brand-icon">
+                CritiFood
+            </a>
+
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -45,7 +49,15 @@
                         </div>
                     {% else %}
                         <ul class="nav ">
-                          <li><a href="{% url 'register' %}" class="nav-item nav-link">Регистрация</a></li>
+                          <li>
+                            {% if site_settings.show_register_button %}
+                              <a href="{% url 'register' %}" class="nav-item nav-link">Регистрация</a>
+
+{#                                <a href="{% url 'register' %}" class="btn btn-primary">#}
+{#                                    Зарегистрироваться#}
+{#                                </a>#}
+                            {% endif %}
+                          </li>
                           <li><a href="{% url 'login' %}" class="nav-item nav-link">Вход</a></li>
                         </ul>
                     {% endif %}

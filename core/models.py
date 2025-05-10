@@ -172,3 +172,24 @@ class DishImageModel(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class SiteSettings(models.Model):
+    show_register_button = models.BooleanField(
+        default=True,
+        verbose_name="Показывать кнопку регистрации"
+    )
+
+    class Meta:
+        verbose_name = "Настройки сайта"
+        verbose_name_plural = "Настройки сайта"
+
+    def save(self, *args, **kwargs):
+        # Оставляем только одну запись настроек
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
