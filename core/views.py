@@ -982,7 +982,7 @@ class add_new_dish_collection(EditCollectionView):
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
         slug = self.kwargs.get(self.slug_url_kwarg)
-        visit_id = VisitModel.objects.get(pk=self.kwargs.get('vpk'))
+        visit_id = VisitModel.objects.get(pk=self.kwargs.get('vpсвk'))
 
         if pk is None and slug is None:
             return self.model(visit_fk=visit_id,user=self.request.user)
