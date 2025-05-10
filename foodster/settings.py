@@ -27,12 +27,10 @@ SECRET_KEY = 'django-insecure-4(@m-8td(7q+m-jjzakz5+1ea6gk#ng@i-rt3&_8wu^3749lo7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"  # По умолчанию True (для разработки)
 
-DEBUG = True
-
-# if DEBUG:
-#    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-# else:
-ALLOWED_HOSTS = ['critifood.ru','92.255.77.160']
+if DEBUG:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+else:
+    ALLOWED_HOSTS = ['critifood.ru','92.255.77.160']
 
 if not DEBUG:
     LOGGING = {
