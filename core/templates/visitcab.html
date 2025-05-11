@@ -57,11 +57,11 @@
         {% else %}
         <div id="home" class="container tab-pane show active" role="tabpanel" aria-labelledby="home-tab">
         {% endif %}    
-              <div>
+              <div class="mt-3 text-center">
                   {% if add %}    
                     <h2 class="modal-title">Новый визит</h2>
                   {% else %}
-                    <h2 class="modal-title">Визит {{ object.data }}</h2>
+                    <h2 class="modal-title">Визит {{ object.data|date:"d E Y г." }}</h2>
                   {% endif %}
               </div>
               <div>

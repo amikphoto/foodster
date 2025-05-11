@@ -263,11 +263,11 @@ LOGIN_URL = '/system/login/'
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGES = [
-    ('en-us', 'English'),
-    # ('ru-Ru', 'Russia'),
+    ('ru-Ru', 'Russia'),
+    # ('en-us', 'English'),
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-Ru'
 
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
