@@ -14,7 +14,23 @@ from .filters import DishLibraryFilterSet, CafesLibraryFilterSet, VisitsFilterSe
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.core.files import File
+from decimal import Decimal
 
+def process_initial(data):
+    """
+    Рекурсивно обрабатывает данные initial, чтобы сделать их JSON-совместимыми.
+    """
+    if isinstance(data, dict):
+        return {
+            key: process_initial(value) for key, value in data.items()
+        }
+    elif isinstance(data, list):
+        return [process_initial(item) for item in data]
+    elif isinstance(data, File):
+        return data.url if data else None
+    else:
+        return data
 
 def dishinfo(request):
     context = {}
@@ -973,11 +989,59 @@ class add_new_dish(FormViewMixin, UpdateView):
                 return JsonResponse({'success_url': self.get_success_url()})
         return super().form_valid(form)
 
+def serialize_value(value):
+    """
+    Рекурсивная функция для конвертации неподдерживаемых типов
+    """
+    if isinstance(value, dict):
+        return {k: serialize_value(v) for k, v in value.items()}
+    elif isinstance(value, list):
+        return [serialize_value(item) for item in value]
+    elif isinstance(value, Decimal):
+        return float(value)
+    elif isinstance(value, File):
+        return value.url if value else None
+    elif isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    else:
+        return str(value)  # резервный вариант
 
 class add_new_dish_collection(EditCollectionView):
     model = DishModel
     collection_class = DishFormset
     template_name = "add_new_dish_collection.html"
+
+    # def get_initial(self):
+    #     initial = super().get_initial()
+    #     # initial['DishSet'].pop('dish_images')
+    #     return initial
+
+    def _fetch_partial_data(self):
+        collection_class = self.get_collection_class()
+        empty_holder = collection_class
+        initial = self.get_initial()  # Получаем "сырые" данные
+        bucket = None
+
+        for part in self.request.GET['path'].split('.'):
+            if not (empty_holder := getattr(empty_holder, 'declared_holders', {}).get(part)):
+                break
+            bucket = initial.setdefault(part, {})
+
+        if bucket is not None:
+            try:
+                instance = empty_holder._meta.model.objects.get(pk=self.request.GET.get('pk'))
+                data = type(empty_holder)(instance=instance).initial
+
+                # Конвертируем только те данные, которые пойдут в JsonResponse
+                cleaned_data = serialize_value(data)
+                bucket.update(**cleaned_data)
+            except empty_holder._meta.model.DoesNotExist:
+                pass
+            else:
+                # Теперь сериализуем весь initial перед отправкой
+                return JsonResponse(serialize_value(initial))
+
+        return HttpResponseBadRequest("Invalid path value")
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
