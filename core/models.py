@@ -1,8 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.utils.functional import empty
 from django_resized import ResizedImageField
 from django.contrib.contenttypes.fields import GenericRelation
+from location_field.models.plain import PlainLocationField
+
 # from rating.models import Rating
 
 # Create your models here.
@@ -30,14 +33,19 @@ class DishCatalog(models.Model):
         return f'<{self.__class__.__name__}: "{self.name}">'
 
 
-
+""" нужно добавить для кафе еще webaddress, телефон. Кроме того нужен Город """
 
 class CafeModel(models.Model):
 
     title = models.CharField(verbose_name="Название", max_length=200)
     content = models.TextField(verbose_name="Описание")
     typeofkitchen = models.TextField(verbose_name="Специфика заведения")
-    address = models.TextField(verbose_name="Адрес")
+
+    city = models.CharField(verbose_name="Город", null=True, blank=True, max_length=200)
+    address = models.TextField(verbose_name="Адрес", null=True, blank=True)
+    wwwaddress = models.URLField(verbose_name="Web адрес", null=True, blank=True)
+
+    # location = PlainLocationField(based_fields=['address'], zoom=7, null=True)
     average_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="Рейтинг")
 
     date_created = models.DateTimeField(default=timezone.now)
@@ -118,7 +126,8 @@ class DishLibraryModel(models.Model):
     dishcatalog_fk = models.ForeignKey(DishCatalog, on_delete=models.CASCADE, verbose_name='Блюдо-образец для сравнения', null=True, blank=True)
     type_of_kitchen_fk = models.ForeignKey(TypeOfKitchen, on_delete=models.CASCADE, verbose_name='Тип кухни')
     cafe_fk = models.ForeignKey(CafeModel, on_delete=models.CASCADE, verbose_name='', null=True, blank=True)
-    CulinaryClassModel_fk = models.ForeignKey(CulinaryClassModel, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Кулинарный класс')
+    # CulinaryClassModel_fk = models.ForeignKey(CulinaryClassModel, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Кулинарные классы')
+    CulinaryClassModel_fk = models.ManyToManyField(CulinaryClassModel, verbose_name='Кулинарные классы')
 
     def __str__(self):
         return self.name

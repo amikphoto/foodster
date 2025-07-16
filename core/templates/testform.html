@@ -2,7 +2,8 @@
 {% load formsetify %}
 {%  block content %}
 
-{#<django-formset endpoint="{{ request.path }}" csrf-token="{{ csrf_token }}">#}
+<django-formset endpoint="{{ request.path }}" csrf-token="{{ csrf_token }}">
 {#{% render_form form "bootstrap" field_classes="row mb-3" label_classes="col-sm-3" control_classes="col-sm-9" %}#}
-{#</django-formset>#}
+        {{ form_collection }}
+</django-formset>
 {% endblock %}

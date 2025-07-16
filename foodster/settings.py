@@ -152,6 +152,8 @@ INSTALLED_APPS = [
     # 'gallery',
 
     'core',
+    'location_field.apps.DefaultConfig',
+
     # 'cafes_cms_integration.apps.CafesCmsIntegrationConfig',
 
     ]
@@ -212,6 +214,12 @@ TEMPLATES = [
     },
 ]
 
+LOCATION_FIELD = {
+    'provider.openstreetmap.max_zoom': 18,
+    # 'map.provider': 'yandex',
+    # 'map.zoom': 13,
+    # 'search.provider': 'yandex',
+}
 
 WSGI_APPLICATION = 'foodster.wsgi.application'
 

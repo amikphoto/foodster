@@ -2,20 +2,26 @@ from django import forms
 from django.forms.models import ModelForm, ModelChoiceField, construct_instance, model_to_dict
 from django.template.context_processors import request
 from django.urls import reverse
+from location_field.widgets import LocationWidget
 
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, DishLibraryModel, DishCatalog, VisitImageModel, DishImageModel, CulinaryClassModel, TypeOfKitchen
-from django.forms import inlineformset_factory, Textarea
+from django.forms import inlineformset_factory, Textarea, SelectMultiple
 from django.forms.fields import IntegerField, FileField, CharField, ChoiceField, MultipleChoiceField, BooleanField
 from django.forms.widgets import HiddenInput, RadioSelect, NumberInput, CheckboxSelectMultiple, Widget, ChoiceWidget, Select
-from formset.widgets import DateInput, Selectize, UploadedFileInput
+from formset.widgets import DateInput, Selectize, SelectizeMultiple
 from formset.collection import FormCollection
 from formset.renderers.bootstrap import FormRenderer
-from formset.widgets import DatePicker, DateTimePicker, DateTimeInput, UploadedFileInput, Button
+from formset.widgets import DatePicker, DateTimePicker, DateTimeInput, Button
+from formset.widgets import UploadedFileInput
 # from django_starfield import Stars
 from django_selectize import forms as s2forms
 from formset.dialog import DialogModelForm
-from formset.fields import Activator
+# from formset.fields import Activator
+from formset.formfields.activator import Activator
 from formset.renderers import ButtonVariant
+from django_filters import FilterSet, ModelChoiceFilter
+
+from location_field.forms.plain import PlainLocationField
 
 # class TextInfoField(Field):
 #     input_type = "number"
@@ -92,8 +98,18 @@ class myTextarea(Widget):
         super().__init__(default_attrs)
 
 
-class dishTextarea(Widget):
-    template_name = "django/forms/widgets/textarea.html"
+# class dishTextarea(Widget):
+#     template_name = "django/forms/widgets/textarea.html"
+#
+#     def __init__(self, attrs=None):
+#         # Use slightly better defaults than HTML's 20x2 box
+#         default_attrs = {"cols": "40", "rows": "10"}
+#         if attrs:
+#             default_attrs.update(attrs)
+#         super().__init__(default_attrs)
+
+class TextAreaWithMap(Textarea):
+    template_name = "django/forms/widgets/textareawithmap.html"
 
     def __init__(self, attrs=None):
         # Use slightly better defaults than HTML's 20x2 box
@@ -107,14 +123,15 @@ class CafeForm(ModelForm):
 
     class Meta:
       model = CafeModel
-      fields = ['title','content','typeofkitchen','address',]
+      fields = ['title','content','typeofkitchen','city','address','wwwaddress']
       labels = {'title': 'Название', 'content': 'Контент', 'typeofkitchen': 'Специфика заведения', 'address': 'Адрес',}
 
       widgets = {
             'title': Textarea(attrs={'rows': 1}),
             'content': Textarea(attrs={'rows': 2}),
             'typeofkitchen': Textarea(attrs={'rows': 1}),
-            'address': Textarea(attrs={'rows': 2}),
+            'address': TextAreaWithMap(attrs={'rows': 2}),
+            # 'location': LocationWidget(based_fields=['address'],)
             # 'date_created': DateTimeInput(attrs={'hidden': 'true'}),
       }
 
@@ -205,6 +222,18 @@ class DishLibraryForm(ModelForm):
             'dishcatalog_fk': Selectize(search_lookup='title__icontains'),
         }
 
+# class CafeFilterSet(FilterSet):
+#     dish_fk = ModelChoiceFilter(
+#         queryset=DishLibraryModel.objects.all(),
+#     )
+#
+#     @property
+#     def qs(self):
+#         parent_qs = super().qs
+#         if cafe := self.request.GET.get('filter-cafe'):
+#             return parent_qs.filter(cafe_fk=cafe)
+#         return parent_qs
+
 
 class DishForm(ModelForm):
 
@@ -214,7 +243,9 @@ class DishForm(ModelForm):
     dish_info = IntegerField(required=False, widget=HiddenInput)
 
     cafe = ModelChoiceField(queryset=CafeModel.objects.all(),
-        widget=Selectize(attrs={'disabled':'disabled'}),
+        widget=Selectize(
+            attrs={'disabled':'disabled'}
+            ),
         # required=False,
         label="Кафе",
     )
@@ -224,6 +255,18 @@ class DishForm(ModelForm):
                              # required=False,
                              label="Визит",
     )
+
+    # dish_fk = ModelChoiceField(queryset=DishLibraryModel.objects.all(),
+    #                            widget=Selectize(
+    #                                    attrs={'hx-get': '/dishinfo','hx-target':'[name="dish_info"]', 'hx-swap': 'outerHTML',
+    #                                            'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed',
+    #                                           },
+    #                                    # filter_by = {'cafe': 'cafe_fk__id'},
+    #                                    filter_by={'cafe': 'cafe_fk__id'},
+    #                                    # use_filter_set=CafeFilterSet,
+    #                                    search_lookup=['name__icontains'],
+    #                                    ),
+    # )
 
     add_dish = Activator(
         label="Добавить новое",
@@ -272,11 +315,6 @@ class DishForm(ModelForm):
     class Meta:
 
         model = DishModel
-        # fields = ['title', 'description', 'rating', ]
-        # labels = {'title': 'Название блюда этого заведения', 'description': 'Описание блюда', 'rating': 'Оценка блюда'}
-
-
-        # fields = ['title','typeofdish_fk','dishcatalog_fk','description', 'rating','typeofdish_fk1','dishcatalog_fk1',]
         fields = ['id','currentuser','cafe','visit','dish_fk','dish_info','add_dish','edit_dish','description','price','rating',]
         labels = {'dish_fk': 'Название блюда этого заведения','description': 'Описание блюда', 'rating': 'Оценка блюда', 'price': 'Цена блюда' }
 
@@ -286,15 +324,10 @@ class DishForm(ModelForm):
                 attrs={'hx-get': '/dishinfo','hx-target':'[name="dish_info"]', 'hx-swap': 'outerHTML',
                         'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed',
                        },
-
-        # 'hx-trigger': 'click from:. delay:100ms, load, change changed'},
-
-                # 'hx-trigger':'click from:body delay:100ms, load, change changed'},
-                search_lookup=['title__icontains'],
-                filter_by={'cafe':'cafe_fk__id'}
-        ),
+                search_lookup='name__icontains',
+                filter_by={'cafe': 'cafe_fk__id'},
+                ),
             'rating': RadioStarSelect(attrs={'class': 'formset-inlined django-starfield'}, ),
-            # 'cafe': Select(attrs={'class':'container'}),
         }
 
 class testform(ModelForm):
@@ -309,6 +342,8 @@ class testform(ModelForm):
         widgets = {
             'title': Textarea(attrs={'rows': 2}),
             'dish_fk': SelectWidget,
+            'CulinaryClassModel_fk': SelectizeMultiple(search_lookup='name__icontains', max_items=15),
+
             # 'dishcatalog_fk1': Selectize(search_lookup='title__icontains'),
         }
 
@@ -341,7 +376,8 @@ class AddCulinaryClassForm(DialogModelForm):
         widget=Button(
             attrs={'class': 'w-40 mx-1'},
             button_variant=ButtonVariant.PRIMARY,
-            action='submitPartial -> setFieldValue(add_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id) ->  activate("clear")',
+            # action='submitPartial -> activate("clear")',
+            action='submitPartial -> setFieldValue(add_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id) -> setFieldValue(edit_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id) -> activate("clear")',
             # action='submitPartial -> setFieldValue(DishSet.edit_dish.dishcatalog_fk, ^dishcatalog_fk_id) -> setFieldValue(add_dish.dishcatalog_fk, ^dishcatalog_fk_id) -> activate("clear")',
         ),
     )
@@ -380,7 +416,8 @@ class EditCulinaryClassForm(DialogModelForm):
         widget=Button(
             attrs={'class': 'w-40 mx-1', },
             button_variant=ButtonVariant.PRIMARY,
-            action='submitPartial -> setFieldValue(edit_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id)  -> activate("clear")',
+            # action='submitPartial -> activate("clear")',
+            action='submitPartial -> setFieldValue(edit_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id)  -> setFieldValue(add_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id)  -> activate("clear")',
             # action='submitPartial -> setFieldValue(DishSet.edit_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id) -> setFieldValue(add_dish.CulinaryClassModel_fk, ^CulinaryClassModel_fk_id) -> activate("clear")',
         ),
     )
@@ -648,7 +685,6 @@ class ChangeDishLibraryForm(DialogModelForm):
         ),
     )
 
-
     class Meta:
         model = DishLibraryModel
         fields = ['id', 'name' ,'dishcatalog_fk','add_cat','edit_cat','CulinaryClassModel_fk','add_class','edit_class','type_of_kitchen_fk','add_type','edit_type']
@@ -656,7 +692,8 @@ class ChangeDishLibraryForm(DialogModelForm):
 
         widgets = {
             'dishcatalog_fk': Selectize(search_lookup='name__icontains'),
-            'CulinaryClassModel_fk': Selectize(search_lookup='name__icontains'),
+            'CulinaryClassModel_fk': SelectizeMultiple(search_lookup='name__icontains'),
+            # 'CulinaryClassModel_fk': SelectMultiple(),
             'type_of_kitchen_fk': Selectize(search_lookup='name__icontains'),
 
         }
@@ -767,7 +804,7 @@ class AddDishLibraryForm(DialogModelForm):
 
         widgets = {
             'dishcatalog_fk': Selectize(search_lookup='name__icontains'),
-            'CulinaryClassModel_fk': Selectize(search_lookup='name__icontains'),
+            'CulinaryClassModel_fk': SelectizeMultiple(search_lookup='name__icontains'),
             'type_of_kitchen_fk': Selectize(search_lookup='name__icontains'),
 
         }

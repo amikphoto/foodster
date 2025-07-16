@@ -1,0 +1,223 @@
+<textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+
+<div id="map" class="container">
+
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+            margin-top: 20px;
+        }
+    </style>
+
+     <script>
+        let map;
+        let placemark;
+
+        ymaps.ready(function () {
+            map = new ymaps.Map("map", {
+                center: [55.7518, 37.6195],
+                zoom: 10
+            });
+
+            // Обработчики событий для поля ввода
+            const addressField = document.getElementById('id_cafe.address');
+            addressField.addEventListener('keydown', onInputKeyDown);
+            addressField.addEventListener('blur', onInputBlur);
+
+            // Обработка клика по карте
+            map.events.add('click', function (e) {
+                const coords = e.get('coords');
+                reverseGeocode(coords);     // 🔁 Обратное геокодирование
+                updatePlacemark(coords);    // 📍 Обновляем маркер
+            });
+
+            // Автозагрузка при открытии формы
+            if (addressField.value.trim()) {
+                findAddress();
+            }
+        });
+
+        function onInputKeyDown(e) {
+            if (e.key === 'Enter') {
+                findAddress();
+            }
+        }
+
+        function onInputBlur() {
+            findAddress();
+        }
+
+        function findAddress() {
+            const address = document.getElementById("id_cafe.address")?.value.trim();
+
+            if (!address) {
+                alert("Введите адрес");
+                return;
+            }
+
+            ymaps.geocode(address).then(function (res) {
+                if (res.geoObjects.getLength() > 0) {
+                    const coords = res.geoObjects.get(0).geometry.getCoordinates();
+                    map.setCenter(coords, 15);
+                    handleMapClick(coords);
+                } else {
+                    alert("Адрес не найден");
+                }
+            }).catch(function (err) {
+                console.error("Ошибка поиска адреса:", err);
+                alert("Не удалось найти адрес");
+            });
+        }
+
+        function handleMapClick(coords) {
+            updateCoordinates(coords);
+            updatePlacemark(coords);
+        }
+
+        function updatePlacemark(coords) {
+            const cafename = document.getElementById("id_cafe.title")?.value || "Кафе";
+
+            if (placemark) {
+                map.geoObjects.remove(placemark);
+            }
+
+            placemark = new ymaps.Placemark(
+                coords,
+                {
+                    balloonContent: cafename
+                },
+                {
+                    preset: "islands#violetStretchyIcon"
+                }
+            );
+
+            map.geoObjects.add(placemark);
+        }
+
+        function updateCoordinates(coords) {
+            ymaps.geocode(coords).then(function (res) {
+                if (res.geoObjects.getLength() > 0) {
+                    const address = res.geoObjects.get(0).getAddressLine();
+                    const addressInput = document.getElementById('id_cafe.address');
+                    if (addressInput) {
+                        addressInput.value = address;
+                    }
+                }
+            }).catch(function (err) {
+                console.error("Ошибка геокодирования:", err);
+            });
+        }
+
+        // 🔥 Функция обратного геокодирования — добавлена здесь
+        function reverseGeocode(coords) {
+            ymaps.geocode(coords).then(function (res) {
+                if (res.geoObjects.getLength() > 0) {
+                    const address = res.geoObjects.get(0).getAddressLine();
+                    const addressInput = document.getElementById('id_cafe.address');
+                    if (addressInput) {
+                        addressInput.value = address;
+                    }
+                }
+            }).catch(function (err) {
+                console.error("Ошибка обратного геокодирования:", err);
+            });
+        }
+    </script>
+
+{#    <script>    #}
+{#        ymaps.ready(init);#}
+{#        function init() {#}
+{#        var myMap = new ymaps.Map('map', {#}
+{#            center: [55.753994, 37.622093],#}
+{#            zoom: 9#}
+{#        });#}
+{#    #}
+{#        // Поиск координат #}
+{#        ymaps.geocode('г.Кострома, ул. Советская, 47', {#}
+{#            /**#}
+{#             * Опции запроса#}
+{#             * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/geocode.xml#}
+{#             */#}
+{#            // Сортировка результатов от центра окна карты.#}
+{#            // boundedBy: myMap.getBounds(),#}
+{#            // strictBounds: true,#}
+{#            // Вместе с опцией boundedBy будет искать строго внутри области, указанной в boundedBy.#}
+{#            // Если нужен только один результат, экономим трафик пользователей.#}
+{#            results: 1#}
+{#        }).then(function (res) {#}
+{#                // Выбираем первый результат геокодирования.#}
+{#                var firstGeoObject = res.geoObjects.get(0),#}
+{#                    // Координаты геообъекта.#}
+{#                    coords = firstGeoObject.geometry.getCoordinates(),#}
+{#                    // Область видимости геообъекта.#}
+{#                    bounds = firstGeoObject.properties.get('boundedBy');#}
+{#    #}
+{#                firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');#}
+{#                // Получаем строку с адресом и выводим в иконке геообъекта.#}
+{#                firstGeoObject.properties.set('iconCaption', firstGeoObject.getAddressLine());#}
+{#    #}
+{#                // Добавляем первый найденный геообъект на карту.#}
+{#                myMap.geoObjects.add(firstGeoObject);#}
+{#                // Масштабируем карту на область видимости геообъекта.#}
+{#                myMap.setBounds(bounds, {#}
+{#                    // Проверяем наличие тайлов на данном масштабе.#}
+{#                    checkZoomRange: true#}
+{#                });#}
+{#    #}
+{#                /**#}
+{#                 * Все данные в виде javascript-объекта.#}
+{#                 */#}
+{#                console.log('Все данные геообъекта: ', firstGeoObject.properties.getAll());#}
+{#                /**#}
+{#                 * Метаданные запроса и ответа геокодера.#}
+{#                 * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/GeocoderResponseMetaData.xml#}
+{#                 */#}
+{#                console.log('Метаданные ответа геокодера: ', res.metaData);#}
+{#                /**#}
+{#                 * Метаданные геокодера, возвращаемые для найденного объекта.#}
+{#                 * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/GeocoderMetaData.xml#}
+{#                 */#}
+{#                console.log('Метаданные геокодера: ', firstGeoObject.properties.get('metaDataProperty.GeocoderMetaData'));#}
+{#                /**#}
+{#                 * Точность ответа (precision) возвращается только для домов.#}
+{#                 * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/precision.xml#}
+{#                 */#}
+{#                console.log('precision', firstGeoObject.properties.get('metaDataProperty.GeocoderMetaData.precision'));#}
+{#                /**#}
+{#                 * Тип найденного объекта (kind).#}
+{#                 * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/kind.xml#}
+{#                 */#}
+{#                console.log('Тип геообъекта: %s', firstGeoObject.properties.get('metaDataProperty.GeocoderMetaData.kind'));#}
+{#                console.log('Название объекта: %s', firstGeoObject.properties.get('name'));#}
+{#                console.log('Описание объекта: %s', firstGeoObject.properties.get('description'));#}
+{#                console.log('Полное описание объекта: %s', firstGeoObject.properties.get('text'));#}
+{#                /**#}
+{#                * Прямые методы для работы с результатами геокодирования.#}
+{#                * @see https://tech.yandex.ru/maps/doc/jsapi/2.1/ref/reference/GeocodeResult-docpage/#getAddressLine#}
+{#                */#}
+{#                console.log('\nГосударство: %s', firstGeoObject.getCountry());#}
+{#                console.log('Населенный пункт: %s', firstGeoObject.getLocalities().join(', '));#}
+{#                console.log('Адрес объекта: %s', firstGeoObject.getAddressLine());#}
+{#                console.log('Наименование здания: %s', firstGeoObject.getPremise() || '-');#}
+{#                console.log('Номер здания: %s', firstGeoObject.getPremiseNumber() || '-');#}
+{#    #}
+{#                /**#}
+{#                 * Если нужно добавить по найденным геокодером координатам метку со своими стилями и контентом балуна, создаем новую метку по координатам найденной и добавляем ее на карту вместо найденной.#}
+{#                 */#}
+{#                /**#}
+{#                 var myPlacemark = new ymaps.Placemark(coords, {#}
+{#                 iconContent: 'моя метка',#}
+{#                 balloonContent: 'Содержимое балуна <strong>моей метки</strong>'#}
+{#                 }, {#}
+{#                 preset: 'islands#violetStretchyIcon'#}
+{#                 });#}
+{#    #}
+{#                 myMap.geoObjects.add(myPlacemark);#}
+{#                 */#}
+{#            });#}
+{#        }#}
+{#    </script>#}
+    
+</div>

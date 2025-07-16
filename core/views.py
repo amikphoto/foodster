@@ -1,6 +1,7 @@
 from django.db.models import Count, Avg
 from django.views.generic import UpdateView, FormView, TemplateView
 from django.forms.models import construct_instance
+# from formset.collection import construct_instance
 from formset.views import FormViewMixin, IncompleteSelectResponseMixin
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
@@ -36,7 +37,9 @@ def dishinfo(request):
     context = {}
     dish_fk_id = request.GET.get('dish_fk')
     if dish_fk_id:
+        dish = DishLibraryModel.objects.get(pk=dish_fk_id)
         context['dish'] = DishLibraryModel.objects.get(pk=dish_fk_id)
+        context['classes'] = list(dish.CulinaryClassModel_fk.values_list('name', flat=True))
         return render(request, 'dish_info.html', context)
     return "<br>"
 
@@ -282,6 +285,9 @@ def dishes_list(request):
     return render(request, 'dishes_list.html', context)
 
 
+
+
+
 class TestView(IncompleteSelectResponseMixin, FormViewMixin, UpdateView):
     model = DishModel
     form_class = testform
@@ -296,16 +302,21 @@ class TestView(IncompleteSelectResponseMixin, FormViewMixin, UpdateView):
     #         queryset = self.get_queryset()
     #     return queryset.last()
 
-    def get_object(self, queryset=None):
-        pk = self.kwargs.get(self.pk_url_kwarg)
-        slug = self.kwargs.get(self.slug_url_kwarg)
-        cafe_id = CafeModel.objects.get(pk=self.kwargs.get('cafe_id'))
-        queryset = DishCatalog.objects.all()
+    # def get_object(self, queryset=None):
+    #     pk = self.kwargs.get(self.pk_url_kwarg)
+    #     slug = self.kwargs.get(self.slug_url_kwarg)
+    #     cafe_id = CafeModel.objects.get(pk=self.kwargs.get('cafe_id'))
+    #     queryset = DishCatalog.objects.all()
+    #
+    #     if pk is None and slug is None:
+    #         return self.model(cafe_fk=cafe_id)
+    #     return super().get_object()
 
-        if pk is None and slug is None:
-            return self.model(cafe_fk=cafe_id)
-        return super().get_object()
 
+class TestViewCollection(EditCollectionView):
+    model = DishModel
+    collection_class = DishFormset
+    template_name = "testform.html"
 
 class VisitView(EditCollectionView):
     model = VisitModel
@@ -1011,11 +1022,6 @@ class add_new_dish_collection(EditCollectionView):
     collection_class = DishFormset
     template_name = "add_new_dish_collection.html"
 
-    # def get_initial(self):
-    #     initial = super().get_initial()
-    #     # initial['DishSet'].pop('dish_images')
-    #     return initial
-
     def _fetch_partial_data(self):
         collection_class = self.get_collection_class()
         empty_holder = collection_class
@@ -1065,8 +1071,12 @@ class add_new_dish_collection(EditCollectionView):
         # qr = qr.filter(id=context['dishmodel'].visit_fk.cafe_fk.id)
         # context['form_collection'].declared_holders['dish_form'].fields['cafe'].queryset = qr
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['visit'].initial = context['dishmodel'].visit_fk.id
-
         context['form_collection'].declared_holders['DishSet'].declared_holders['dish_form'].fields['currentuser'].initial = self.request.user.id
+
+        if 'pk' in self.kwargs:
+            dish = DishLibraryModel.objects.get(pk=context['dishmodel'].dish_fk.pk)
+            classes = dish.CulinaryClassModel_fk.values_list('pk', flat=True)
+            context['form_collection'].declared_holders['edit_dish'].fields['CulinaryClassModel_fk'].initial = classes
 
         if not self.request.user.is_authenticated:
             context['form_collection'].initial['DishSet'].pop('dish_images')
@@ -1116,11 +1126,11 @@ class add_new_dish_collection(EditCollectionView):
             elif form_collection.valid_holders.get('add_class_form'):
                 if not (valid_holder := form_collection.valid_holders.get('add_class_form')):
                     return HttpResponseBadRequest("Form data is missing.")
-                if id := valid_holder.cleaned_data['id']:
-                    class_model_item = CulinaryClassModel.objects.get(id=id)
-                    construct_instance(valid_holder, class_model_item)
-                else:
-                    class_model_item = construct_instance(valid_holder, CulinaryClassModel())
+                # if id := valid_holder.cleaned_data['id']:
+                #     class_model_item = CulinaryClassModel.objects.get(id=id)
+                #     construct_instance(valid_holder, class_model_item)
+                # else:
+                class_model_item = construct_instance(valid_holder, CulinaryClassModel())
                 class_model_item.save()
                 return JsonResponse({'CulinaryClassModel_fk_id': class_model_item.id})
             elif form_collection.valid_holders.get('edit_class_form'):
@@ -1146,6 +1156,8 @@ class add_new_dish_collection(EditCollectionView):
                 visit_id = VisitModel.objects.get(pk=self.kwargs.get('vpk'))
                 DishLibraryModelItem.cafe_fk = CafeModel.objects.get(pk=visit_id.cafe_fk.id)
                 DishLibraryModelItem.save()
+                DishLibraryModelItem.CulinaryClassModel_fk.set(form_collection.cleaned_data['add_dish']['CulinaryClassModel_fk'])
+                # return JsonResponse({'dish_fk_id': form_collection.cleaned_data['add_dish']['CulinaryClassModel_fk']})
                 return JsonResponse({'dish_fk_id': DishLibraryModelItem.id})
             elif form_collection.valid_holders.get('edit_dish'):
                 if not (valid_holder := form_collection.valid_holders.get('edit_dish')):
@@ -1162,6 +1174,8 @@ class add_new_dish_collection(EditCollectionView):
                     cafe = VisitModel.objects.get(pk=self.kwargs.get('vpk')).cafe_fk
                 DishLibraryModelItem.cafe_fk = cafe
                 DishLibraryModelItem.save()
+                DishLibraryModelItem.CulinaryClassModel_fk.set(form_collection.cleaned_data['edit_dish']['CulinaryClassModel_fk'])
+                # form_collection.cleaned_data['edit_dish']['CulinaryClassModel_fk']
                 return JsonResponse({'dish_fk_id': DishLibraryModelItem.id})
 
         # rating = str(6 - int(form_collection.instance.rating))
