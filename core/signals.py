@@ -4,7 +4,7 @@ from core.models import DishModel, VisitModel
 
 
 @receiver(post_save, sender=DishModel)
-def raiting_update(sender, created ,instance, **kwargs):
+def raiting_dish_update(sender, created ,instance, **kwargs):
         # print(instance)
         cafe = instance.visit_fk.cafe_fk
 
@@ -43,7 +43,7 @@ def raiting_update(sender, created ,instance, **kwargs):
         cafe.save()
 
 @receiver(post_save, sender=VisitModel)
-def raiting_update(sender, created, instance, **kwargs):
+def raiting_visit_update(sender, created, instance, **kwargs):
         if not kwargs['update_fields']:
                 count = 0
                 average_rating = 0
