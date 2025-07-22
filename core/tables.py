@@ -76,7 +76,29 @@ class BestDishesTable(tables.Table):
             return mark_safe(f'<div class="col-12"><a href="/dishesphotos/{record["dish_fk"]}"><img src="{thumbnail.url}" class="img-fluid rounded" alt="Dish Image"></a></div>')
         return mark_safe('<div class="col-12"><img src="/media/media/no_photo.jpg" alt="No Image" class="img-fluid rounded"></div>')
 
+    dish_info = tables.Column(verbose_name='Блюдо/Кафе',
+                              accessor='dish_fk',
+                              attrs={'td': {'class': 'd-md-none'},
+                                     'th': {'class': 'd-md-none'}
+                                     },
+                              )
+
+    def render_dish_info(self, value, record):
+        dish_name = record.get('dish_fk__name', 'Не указано')
+        cafe_name = record.get('visit_fk__cafe_fk__title', 'Не указано')
+        dish_url = "/visitlist/" + str(record.get('dish_fk'))
+        cafe_url = "/cafe/"+str(record.get('visit_fk__cafe_fk'))
+        return mark_safe(f"""
+            <div>
+                <strong>Блюдо:</strong><a href='{dish_url}'>{dish_name}</a><br>
+                <strong>Кафе:</strong><a href='{cafe_url}'> {cafe_name}</a>
+            </div>
+        """)
+
     dish_fk__name = tables.Column(verbose_name='Наименование блюда',
+                                  attrs={'td': {'class':'d-none d-md-table-cell'},
+                                         'th': {'class':'d-none d-md-table-cell'}
+                                         },
                                   linkify=lambda record: "/visitlist/" + str(record.get('dish_fk')),
                                   )
     group_count =  tables.Column(verbose_name='Количество',
@@ -84,13 +106,17 @@ class BestDishesTable(tables.Table):
     group_average = tables.Column(verbose_name='Средний балл',
                                 )
     visit_fk__cafe_fk__title = tables.Column(verbose_name='Название кафе',
-                    linkify=lambda record: "/cafe/"+str(record.get('visit_fk__cafe_fk')),
+                                 attrs={'td': {'class': 'd-none d-md-table-cell'},
+                                        'th': {'class': 'd-none d-md-table-cell'}
+                                        },
+                                 linkify=lambda record: "/cafe/"+str(record.get('visit_fk__cafe_fk')),
                                 )
 
     class Meta:
         model = DishModel
+        exclude = ()
         template_name = "django_tables2/bootstrap5_bestdishes.html"
-        fields = ['image','dish_fk__name','visit_fk__cafe_fk__title','group_count','group_average']
+        fields = ['image','dish_info','dish_fk__name','visit_fk__cafe_fk__title','group_count','group_average']
 
 
 

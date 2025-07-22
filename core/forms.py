@@ -281,12 +281,13 @@ class DishForm(ModelForm):
 
     edit_dish = Activator(
         label="Редактировать",
+        required=False,
         widget=Button(
             action='activate(prefillPartial(DishSet.dish_form.dish_fk))',
             # button_variant=ButtonVariant.SECONDARY,
             attrs={
-                'df-hide': '!DishSet.dish_form.currentuser',
                 'df-disable': '!DishSet.dish_form.dish_fk',
+                'df-hide': '!DishSet.dish_form.currentuser',
                 'class': 'w-100 btn-outline-secondary',
             }
         ),
