@@ -5,7 +5,7 @@ from django.urls import reverse
 from location_field.widgets import LocationWidget
 
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, DishLibraryModel, DishCatalog, VisitImageModel, DishImageModel, CulinaryClassModel, TypeOfKitchen
-from django.forms import inlineformset_factory, Textarea, SelectMultiple
+from django.forms import inlineformset_factory, Textarea, SelectMultiple, fields
 from django.forms.fields import IntegerField, FileField, CharField, ChoiceField, MultipleChoiceField, BooleanField
 from django.forms.widgets import HiddenInput, RadioSelect, NumberInput, CheckboxSelectMultiple, Widget, ChoiceWidget, Select
 from formset.widgets import DateInput, Selectize, SelectizeMultiple
@@ -20,6 +20,8 @@ from formset.dialog import DialogModelForm
 from formset.formfields.activator import Activator
 from formset.renderers import ButtonVariant
 from django_filters import FilterSet, ModelChoiceFilter
+from formset.widgets import DecimalUnitInput
+
 
 from location_field.forms.plain import PlainLocationField
 
@@ -256,32 +258,21 @@ class DishForm(ModelForm):
                              label="Визит",
     )
 
-    # dish_fk = ModelChoiceField(queryset=DishLibraryModel.objects.all(),
-    #                            widget=Selectize(
-    #                                    attrs={'hx-get': '/dishinfo','hx-target':'[name="dish_info"]', 'hx-swap': 'outerHTML',
-    #                                            'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed',
-    #                                           },
-    #                                    # filter_by = {'cafe': 'cafe_fk__id'},
-    #                                    filter_by={'cafe': 'cafe_fk__id'},
-    #                                    # use_filter_set=CafeFilterSet,
-    #                                    search_lookup=['name__icontains'],
-    #                                    ),
-    # )
-
     add_dish = Activator(
         label="Добавить новое",
         widget=Button(
             action='activate',
             # button_variant=ButtonVariant.SECONDARY,
             attrs={'class': 'w-100 btn-outline-secondary',
-                   'df-hide': '!DishSet.dish_form.currentuser'
+                   'df-hide': '!DishSet.dish_form.currentuser',
+                   'df-disable': 'DishSet.dish_form.dish_fk',
                    }
         ),
     )
 
     edit_dish = Activator(
         label="Редактировать",
-        required=False,
+        # required=False,
         widget=Button(
             action='activate(prefillPartial(DishSet.dish_form.dish_fk))',
             # button_variant=ButtonVariant.SECONDARY,
@@ -293,25 +284,20 @@ class DishForm(ModelForm):
         ),
     )
 
+    price = fields.DecimalField(
+        label="Цена",
+        min_value=0,
+        decimal_places=2,
+        max_digits=10,
+        step_size=1,  # allows multiples of 1 cent
+    )
+
 
     def model_to_dict(self, main_object):
         rating = main_object.rating
         main_object.rating = str(6-int(rating))
         main_object.cafe = str(main_object.visit_fk.cafe_fk.id)
         return model_to_dict(main_object, fields=self._meta.fields, exclude=self._meta.exclude)
-
-    # def __init__(self, *args, **kwargs):
-    #     super(DishForm, self).__init__(*args, **kwargs)
-    #     self.fields['cafe'].initial = 'cafe'
-
-    # def construct_instance(self, main_object):
-    #     # assert not self.partial
-    #     #     rating = str(6-int(self.valid_holders['DishSet'].valid_holders['dish_form'].data['rating']))
-    #         # self.valid_holders['DishSet'].valid_holders['dish_form'].data['rating'] = rating
-    #     # main_object.rating = str(6 - int(main_object.rating))
-    #     # self.cleaned_data['rating'] = str(6-int(self.cleaned_data['rating']))
-    #     return construct_instance(self, main_object)
-
 
     class Meta:
 
@@ -322,13 +308,18 @@ class DishForm(ModelForm):
         widgets = {
             'description': Textarea(attrs={'rows': 4}),
             'dish_fk': Selectize(
-                attrs={'hx-get': '/dishinfo','hx-target':'[name="dish_info"]', 'hx-swap': 'outerHTML',
-                        'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed',
+                attrs={'hx-get': '/dishinfo',
+                       'hx-target':'[name="dish_info"]',
+                       #id_edit_dish\\.CulinaryClassModel_fk_initial',
+                       'hx-swap': 'outerHTML',
+                       'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed',
                        },
                 search_lookup='name__icontains',
                 filter_by={'cafe': 'cafe_fk__id'},
                 ),
             'rating': RadioStarSelect(attrs={'class': 'formset-inlined django-starfield'}, ),
+            'price': DecimalUnitInput(prefix="€", suffix="руб.", fixed_decimal_places=True),
+
         }
 
 class testform(ModelForm):
@@ -694,7 +685,6 @@ class ChangeDishLibraryForm(DialogModelForm):
         widgets = {
             'dishcatalog_fk': Selectize(search_lookup='name__icontains'),
             'CulinaryClassModel_fk': SelectizeMultiple(search_lookup='name__icontains'),
-            # 'CulinaryClassModel_fk': SelectMultiple(),
             'type_of_kitchen_fk': Selectize(search_lookup='name__icontains'),
 
         }

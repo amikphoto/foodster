@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, TypeOfDishes, DishCatalog, DishLibraryModel, \
     TypeOfKitchen, CulinaryClassModel, DishImageModel, VisitImageModel
-from .forms import CafeFormset,VisitFormset, CafeImageForm, DishForm, VisitForm, CafeForm, testform, DishLibraryForm, DishFormset
+from .forms import CafeFormset, VisitFormset, CafeImageForm, DishForm, VisitForm, CafeForm, testform, DishLibraryForm, DishFormset
 from formset.views import FormCollectionView, EditCollectionView, FormViewMixin, FormView
 from django.http.response import JsonResponse, HttpResponseBadRequest
 from .tables import DishesTable, CafesTable, VisitsTable, MyVisitsTable, TypeTable, ClassTable, BestDishesTable, VisitsListTable
@@ -17,6 +17,8 @@ from django_tables2.views import SingleTableMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.core.files import File
 from decimal import Decimal
+from django.http import HttpResponse
+
 
 def process_initial(data):
     """
@@ -33,17 +35,61 @@ def process_initial(data):
     else:
         return data
 
+# def dishinfo(request):
+#     context = {}
+#     dish_fk_id = request.GET.get('dish_fk')
+#     if dish_fk_id:
+#         dish = DishLibraryModel.objects.get(pk=dish_fk_id)
+#         context['dish'] = DishLibraryModel.objects.get(pk=dish_fk_id)
+#         context['classes'] = list(dish.CulinaryClassModel_fk.values_list('name', flat=True))
+#         return render(request, 'dish_info.html', context)
+#     return "<br>"
+
+# def dishinfo(request):
+#     dish_fk_id = request.GET.get('dish_fk')
+#     if not dish_fk_id:
+#         return HttpResponse('<input type="hidden" name="dish_info" form="id_DishSet.dish_form" id="id_DishSet.dish_form.dish_info">', content_type='text/html')
+#
+#     try:
+#         dish = DishLibraryModel.objects.get(pk=dish_fk_id)
+#         return render(request, 'dish_info.html', {'dish': dish,'classes': list(dish.CulinaryClassModel_fk.values_list('name', flat=True))})
+#     except DishLibraryModel.DoesNotExist:
+#         return HttpResponse('', content_type='text/html')
+
+
 def dishinfo(request):
-    context = {}
     dish_fk_id = request.GET.get('dish_fk')
-    if dish_fk_id:
+    if not dish_fk_id:
+        # Возвращаем пустое скрытое поле
+        return HttpResponse(
+            '<input type="hidden" name="dish_info" form="id_DishSet.dish_form" id="id_DishSet.dish_form.dish_info">',
+            content_type='text/html'
+        )
+
+    try:
         dish = DishLibraryModel.objects.get(pk=dish_fk_id)
-        context['dish'] = DishLibraryModel.objects.get(pk=dish_fk_id)
-        context['classes'] = list(dish.CulinaryClassModel_fk.values_list('name', flat=True))
-        return render(request, 'dish_info.html', context)
-    return "<br>"
+        # Получаем ID классов как int
+        classes_ids = list(dish.CulinaryClassModel_fk.values_list('pk', flat=True))
+    except DishLibraryModel.DoesNotExist:
+        # Возвращаем пустой ответ
+        return HttpResponse('', content_type='text/html')
 
+    # Рендерим шаблон dish_info.html
+    info_html = render(request, 'dish_info.html', {
+        'dish': dish,
+        'classes': list(dish.CulinaryClassModel_fk.values_list('name', flat=True))
+    }).content.decode('utf-8')
 
+    # # Создаём script с initial
+    # initial_html = f'''
+    # <script id="id_edit_dish.CulinaryClassModel_fk_initial" type="application/json">
+    #     {classes_ids}
+    # </script>
+    # '''
+
+    # Объединяем и возвращаем
+    # return HttpResponse(info_html + initial_html, content_type='text/html')
+    return HttpResponse(info_html, content_type='text/html')
 # def iommitest(request):
 #
 #     response = EditTable(auto__model=CulinaryClassModel, columns__name__field__include=True,)
@@ -1017,6 +1063,44 @@ def serialize_value(value):
     else:
         return str(value)  # резервный вариант
 
+class BestDishesListView(SingleTableMixin, FilterView):
+    model = DishModel
+    table_class = BestDishesTable
+    # queryset = model.objects.values_list('dish_fk', flat=True).distinct()
+    # queryset = model.objects.values('dish_fk').annotate(group_count = Count('pk'))
+    queryset = model.objects.values('dish_fk','dish_fk__name','visit_fk__cafe_fk','visit_fk__cafe_fk__title').annotate(group_count=Count('pk'), group_average=Avg('rating')).order_by('-group_average')
+    # queryset = model.objects.all().distinct('pk')
+    paginate_by = 10
+    filterset_class = BestDishesFilterSet
+
+    def get_template_names(self):
+        if self.request.htmx:
+            template_name = "bestdisheslist_htmx.html"
+        else:
+            template_name = "bestdisheslist.html"
+
+        return template_name
+
+
+class MyVisitsListView(SingleTableMixin, FilterView):
+    model = VisitModel
+    table_class = MyVisitsTable
+    filterset_class = MyVisitsFilterSet
+
+    def get_queryset(self):
+        queryset = VisitModel.objects.filter(user=self.request.user)
+        return queryset
+
+
+    def get_template_names(self):
+        if self.request.htmx:
+            template_name = "my_visits_list_htmx.html"
+        else:
+            template_name = "my_visits_list.html"
+
+        return template_name
+
+
 class add_new_dish_collection(EditCollectionView):
     model = DishModel
     collection_class = DishFormset
@@ -1025,7 +1109,7 @@ class add_new_dish_collection(EditCollectionView):
     def _fetch_partial_data(self):
         collection_class = self.get_collection_class()
         empty_holder = collection_class
-        initial = self.get_initial()  # Получаем "сырые" данные
+        initial = self.get_initial()
         bucket = None
 
         for part in self.request.GET['path'].split('.'):
@@ -1038,13 +1122,22 @@ class add_new_dish_collection(EditCollectionView):
                 instance = empty_holder._meta.model.objects.get(pk=self.request.GET.get('pk'))
                 data = type(empty_holder)(instance=instance).initial
 
-                # Конвертируем только те данные, которые пойдут в JsonResponse
+                # 🔧 Модификация: преобразуем ManyToMany поля в список ID
+                # Пример: для edit_dish
+                if self.request.GET['path'] == 'edit_dish':
+                    if hasattr(instance, 'CulinaryClassModel_fk'):
+                        data['CulinaryClassModel_fk'] = list(
+                            instance.CulinaryClassModel_fk.values_list('pk', flat=True)
+                        )
+                    # Добавь другие ManyToMany поля при необходимости
+                    # if hasattr(instance, 'type_of_kitchen_fk'):
+                    #     data['type_of_kitchen_fk'] = instance.type_of_kitchen_fk.pk
+
                 cleaned_data = serialize_value(data)
                 bucket.update(**cleaned_data)
             except empty_holder._meta.model.DoesNotExist:
                 pass
             else:
-                # Теперь сериализуем весь initial перед отправкой
                 return JsonResponse(serialize_value(initial))
 
         return HttpResponseBadRequest("Invalid path value")
@@ -1184,44 +1277,6 @@ class add_new_dish_collection(EditCollectionView):
         # form_collection.instance.rating = rating
         form_collection.valid_holders['DishSet'].cleaned_data.get('dish_form')['rating'] = str(6 - int(form_collection.valid_holders['DishSet'].cleaned_data.get('dish_form')['rating']))
         return super().form_collection_valid(form_collection)
-
-
-class BestDishesListView(SingleTableMixin, FilterView):
-    model = DishModel
-    table_class = BestDishesTable
-    # queryset = model.objects.values_list('dish_fk', flat=True).distinct()
-    # queryset = model.objects.values('dish_fk').annotate(group_count = Count('pk'))
-    queryset = model.objects.values('dish_fk','dish_fk__name','visit_fk__cafe_fk','visit_fk__cafe_fk__title').annotate(group_count=Count('pk'), group_average=Avg('rating')).order_by('-group_average')
-    # queryset = model.objects.all().distinct('pk')
-    paginate_by = 10
-    filterset_class = BestDishesFilterSet
-
-    def get_template_names(self):
-        if self.request.htmx:
-            template_name = "bestdisheslist_htmx.html"
-        else:
-            template_name = "bestdisheslist.html"
-
-        return template_name
-
-
-class MyVisitsListView(SingleTableMixin, FilterView):
-    model = VisitModel
-    table_class = MyVisitsTable
-    filterset_class = MyVisitsFilterSet
-
-    def get_queryset(self):
-        queryset = VisitModel.objects.filter(user=self.request.user)
-        return queryset
-
-
-    def get_template_names(self):
-        if self.request.htmx:
-            template_name = "my_visits_list_htmx.html"
-        else:
-            template_name = "my_visits_list.html"
-
-        return template_name
 
 class VisitsList(SingleTableMixin, FilterView):
     model = VisitModel
