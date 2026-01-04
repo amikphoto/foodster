@@ -127,6 +127,7 @@ INSTALLED_APPS = [
     # 'djangocms_video',
 
     # optional django CMS Frontend modules
+    'djangocms_link',
     'djangocms_frontend',
     'djangocms_frontend.contrib.accordion',
     'djangocms_frontend.contrib.alert',

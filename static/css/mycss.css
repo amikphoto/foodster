@@ -688,6 +688,20 @@ div#columns:hover figure:not(:hover) {
   font-weight: 500;
 }
 
+
+.plain-link a {
+    color: inherit;          /* наследует цвет текста родителя */
+    text-decoration: none;   /* убирает подчёркивание */
+    background: transparent; /* на всякий случай */
+}
+
+.plain-link a:hover,
+.plain-link a:focus {
+    text-decoration: none;   /* убирает подчёркивание при наведении */
+    color: inherit;          /* сохраняет исходный цвет */
+    cursor: pointer;         /* опционально: курсор как у кнопки */
+}
+
 /*!* Переопределение стилей для nav-tabs в зависимости от темы *!*/
 /*[data-bs-theme="light"] .custom_tab_style1 .nav-tabs {*/
 /*  !*--bs-nav-tabs-border-color: #dee2e6;*!*/

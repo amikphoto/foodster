@@ -142,12 +142,23 @@ class DishesTable(tables.Table):
         #     'title': ['exact', 'icontains'],
         #     ("title", "dishcatalog_fk", "type_of_kitchen_fk")
         # }
-        fields = ['id','rating','rating2']
+        # fields = ['id','rating','rating2']
+        fields = ['id', 'rating']
 
 class VisitsListTable(tables.Table):
 
-    data = tables.Column(linkify=lambda record: record.get_absolute_url())
-    description = tables.Column(linkify=lambda record: record.get_absolute_url())
+    data = tables.DateTimeColumn(format='d E Y, H:i', linkify=lambda record: record.get_absolute_url()+"?way=list", attrs={"td": {"class": "plain-link"}})
+    # description = tables.Column(linkify=lambda record: record.get_absolute_url())
+    description = tables.Column()
+
+    def render_description(self, record):
+        text = getattr(record, 'description', '')
+        max_length = 80
+        if len(text) > max_length:
+            return text[:max_length].rstrip() + "…"
+        return text
+
+
     class Meta:
         model = VisitModel
         template_name = "django_tables2/bootstrap5_visits_list.html"
@@ -180,8 +191,16 @@ class VisitsTable(tables.Table):
     #
     #        "hx-target": "#cab",
     #       }})
-    data = tables.Column(linkify=lambda record: record.get_absolute_url()+"?way=list")
-    description = tables.Column(linkify=lambda record: record.get_absolute_url())
+    data = tables.DateTimeColumn(format='d E Y, H:i', linkify=lambda record: record.get_absolute_url()+"?way=list", attrs={"td": {"class": "plain-link"}})
+    # description = tables.Column(linkify=lambda record: record.get_absolute_url())
+    description = tables.Column()
+
+    def render_description(self, record):
+        text = getattr(record, 'description', '')
+        max_length = 80
+        if len(text) > max_length:
+            return text[:max_length].rstrip() + "…"
+        return text
 
 
     # data = tables.LinkColumn(args=[A("pk")])
@@ -198,9 +217,19 @@ class MyVisitsTable(tables.Table):
     #
     #        "hx-target": "#cab",
     #       }})
-    data = tables.Column(linkify=lambda record: record.get_absolute_url()+"?way=list")
+    description = tables.Column()
+
+    def render_description(self, record):
+        text = getattr(record, 'description', '')
+        max_length = 80
+        if len(text) > max_length:
+            return text[:max_length].rstrip() + "…"
+        return text
+
+    data = tables.DateTimeColumn(format='d E Y, H:i', linkify=lambda record: record.get_absolute_url()+"?way=list", attrs={"td": {"class": "plain-link"}})
+    # data = tables.Column(linkify=lambda record: record.get_absolute_url()+"?way=list")
     cafe_fk__title = tables.LinkColumn()
-    description = tables.Column(linkify=lambda record: record.get_absolute_url())
+    # description = tables.Column(linkify=lambda record: record.get_absolute_url())
 
 
     # data = tables.LinkColumn(args=[A("pk")])

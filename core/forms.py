@@ -246,14 +246,17 @@ class DishForm(ModelForm):
 
     cafe = ModelChoiceField(queryset=CafeModel.objects.all(),
         widget=Selectize(
-            attrs={'disabled':'disabled'}
+            attrs={'disabled':'disabled'},
+            placeholder="",
             ),
         # required=False,
         label="Кафе",
     )
 
     visit = ModelChoiceField(queryset=VisitModel.objects.all(),
-                             widget=Selectize(attrs={'disabled': 'disabled'}),
+                             widget=Selectize(attrs={'disabled': 'disabled'},
+                                              placeholder="",
+                                              ),
                              # required=False,
                              label="Визит",
     )
@@ -683,9 +686,9 @@ class ChangeDishLibraryForm(DialogModelForm):
         # fields =['__all__', 'title', 'induce_open', 'induce_close', 'id', 'cancel', 'change']
 
         widgets = {
-            'dishcatalog_fk': Selectize(search_lookup='name__icontains'),
-            'CulinaryClassModel_fk': SelectizeMultiple(search_lookup='name__icontains'),
-            'type_of_kitchen_fk': Selectize(search_lookup='name__icontains'),
+            'dishcatalog_fk': Selectize(search_lookup='name__icontains', placeholder=""),
+            'CulinaryClassModel_fk': SelectizeMultiple(search_lookup='name__icontains', placeholder=""),
+            'type_of_kitchen_fk': Selectize(search_lookup='name__icontains', placeholder=""),
 
         }
 
