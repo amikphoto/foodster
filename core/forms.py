@@ -21,7 +21,7 @@ from formset.formfields.activator import Activator
 from formset.renderers import ButtonVariant
 from django_filters import FilterSet, ModelChoiceFilter
 from formset.widgets import DecimalUnitInput
-
+from formset.collection import AddSiblingActivator
 
 from location_field.forms.plain import PlainLocationField
 
@@ -155,16 +155,12 @@ class CafeImageForm(ModelForm):
       fields = ['id', 'image']
 
 
-# class CollectionFormFieldset(Fieldset):
-
-
-
 class CafeImageCollection(FormCollection):
     min_siblings = 0
-    # legend = 'Фотографии'
+    induce_add_sibling = '.add_photos:active'
     image_form = CafeImageForm()
     related_field = 'cafe_fk'
-
+    add_photos = AddSiblingActivator("Добавить фото")
 
     def retrieve_instance(self, data):
         if data := data.get('image_form'):
@@ -830,9 +826,14 @@ class DishImageForm(ModelForm):
 
 class DishImageCollection(FormCollection):
     min_siblings = 0
+    induce_add_sibling = '.add_photos:active'
+
     # legend = 'Фотографии'
     image_form = DishImageForm()
     related_field = 'dish_fk'
+
+    add_photos = AddSiblingActivator("Добавить фото")
+
 
     def retrieve_instance(self, data):
         if data := data.get('image_form'):
@@ -848,7 +849,7 @@ class DishSet(FormCollection):
 
 
 class DishFormset(FormCollection):
-    add_label = 'Добавить новое блюдо'
+    # add_label = 'Добавить новое блюдо'
     # legend = 'Блюда'
 
     default_renderer = FormRenderer(
@@ -913,9 +914,12 @@ class VisitImageForm(ModelForm):
 
 class VisitImageCollection(FormCollection):
     min_siblings = 0
-    # legend = 'Фотографии'
+    induce_add_sibling = '.add_photos:active'
     image_form = VisitImageForm()
     related_field = 'visit_fk'
+
+    add_photos = AddSiblingActivator("Добавить фото")
+
 
     def retrieve_instance(self, data):
         if data := data.get('image_form'):
