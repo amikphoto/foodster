@@ -4,8 +4,11 @@
             <meta charset="utf-8"/>
             <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+            {% if request.get_host == "critifood.ru" or request.get_host == "www.critifood.ru" %}
+                <meta name="yandex-verification" content="2c7650968f1bb97" />
+            {% endif %}
             {% block meta %}
-                <meta name="description" content="{% page_attribute meta_description %}"/>
+<!--                <meta name="description" content="{% page_attribute meta_description %}"/>-->
                 <meta property="og:type" content="website"/>
                 <meta property="og:title" content="{% page_attribute "page_title" %}"/>
                 <meta property="og:description" content="{% page_attribute meta_description %}"/>
