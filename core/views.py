@@ -860,7 +860,7 @@ class Cafe_cab(EditCollectionView):
     model = CafeModel
     collection_class = CafeFormset
     template_name = "cafe_cab.html"
-    success_url = "/cafes/"
+    # success_url = "/cafes/"
 
     extra_context = {
         'click_actions': 'disable -> submit -> reload !~ scrollToError',
@@ -890,8 +890,8 @@ class Cafe_cab(EditCollectionView):
 
 
     def get_success_url(self):
-        return self.request.META.get('HTTP_REFERER')
-
+        # return self.request.META.get('HTTP_REFERER')
+        return "/cafe/" + str(self.kwargs.get('pk')) + "/?way=list"
 
 class VisitCab(EditCollectionView):
     model = VisitModel
@@ -917,7 +917,7 @@ class VisitCab(EditCollectionView):
     def get_success_url(self):
         # return "/cafe/"+str(VisitModel.objects.get(pk=self.kwargs.get('cpk')).cafe_fk.id)+"/"+str(VisitModel.objects.get(pk=self.kwargs.get('cpk')).id)+"/?way = list"
         # return reverse('core:cafe_cab', kwargs={'pk': self.kwargs.get('cpk')})
-        return "/cafe/"+str(self.kwargs.get('cpk'))+"/?way=list"
+        return "/cafe/"+str(self.kwargs.get('cpk'))+"/"+str(self.kwargs.get('pk'))+"/?way=list"
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)

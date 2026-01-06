@@ -162,12 +162,23 @@ class CafeImageCollection(FormCollection):
     related_field = 'cafe_fk'
     add_photos = AddSiblingActivator("Добавить фото")
 
-    def retrieve_instance(self, data):
+    def get_or_create_instance(self, data):
         if data := data.get('image_form'):
             try:
-                return self.instance.cafe_images.get(id=data.get('id') or 0)
+                return self.instance.cafe_images.get(id=data.get('id') or 0), False
             except (AttributeError, CafeImageModel.DoesNotExist, ValueError):
-                return CafeImageModel(cafe_fk=self.instance)
+                # return CafeImageModel(cafe_fk=self.instance)
+                form = CafeImageForm(data=data)
+                if form.is_valid():
+                    return CafeImageModel(image=form.cleaned_data['image'], cafe_fk=self.instance), False
+        return None, False
+
+    # def retrieve_instance(self, data):
+    #     if data := data.get('image_form'):
+    #         try:
+    #             return self.instance.cafe_images.get(id=data.get('id') or 0)
+    #         except (AttributeError, CafeImageModel.DoesNotExist, ValueError):
+    #             return CafeImageModel(cafe_fk=self.instance)
 
 
 class CafeFormset(FormCollection):
@@ -834,13 +845,15 @@ class DishImageCollection(FormCollection):
 
     add_photos = AddSiblingActivator("Добавить фото")
 
-
-    def retrieve_instance(self, data):
+    def get_or_create_instance(self, data):
         if data := data.get('image_form'):
             try:
-                return self.instance.dish_images.get(id=data.get('id') or 0)
+                return self.instance.dish_images.get(id=data.get('id') or 0), False
             except (AttributeError, DishImageModel.DoesNotExist, ValueError):
-                return DishImageModel(dish_fk=self.instance)
+                form = DishImageForm(data=data)
+                if form.is_valid():
+                    return DishImageModel(image=form.cleaned_data['image'], dish_fk=self.instance), False
+        return None, False
 
 
 class DishSet(FormCollection):
@@ -920,13 +933,24 @@ class VisitImageCollection(FormCollection):
 
     add_photos = AddSiblingActivator("Добавить фото")
 
-
-    def retrieve_instance(self, data):
+    def get_or_create_instance(self, data):
         if data := data.get('image_form'):
             try:
-                return self.instance.visit_images.get(id=data.get('id') or 0)
+                return self.instance.visit_images.get(id=data.get('id') or 0), False
             except (AttributeError, VisitImageModel.DoesNotExist, ValueError):
-                return VisitImageModel(visit_fk=self.instance)
+                # return CafeImageModel(cafe_fk=self.instance)
+                form = VisitImageForm(data=data)
+                if form.is_valid():
+                    return VisitImageModel(image=form.cleaned_data['image'], visit_fk=self.instance), False
+        return None, False
+
+
+    # def retrieve_instance(self, data):
+    #     if data := data.get('image_form'):
+    #         try:
+    #             return self.instance.visit_images.get(id=data.get('id') or 0)
+    #         except (AttributeError, VisitImageModel.DoesNotExist, ValueError):
+    #             return VisitImageModel(visit_fk=self.instance)
 
 
 
