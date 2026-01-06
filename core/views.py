@@ -96,6 +96,8 @@ def dishinfo(request):
 #     # response =  crud_views(model=CulinaryClassModel)
 #     return response
 
+class StartView(TemplateView):
+    template_name = "start.html"
 
 class TypeEditTableView(TemplateView):
     template_name = "django_tables2/type_row.html"

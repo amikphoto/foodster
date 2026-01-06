@@ -12,7 +12,7 @@ from .views import (CafeFormsetView, VisitView, TestView, add_dish_library, Tabl
                     DishesListView, add_new_dish, add_new_dish_collection, TypeDictListView,
                     DictView, TypeEditTableView, TypeDictUpdateListView, ClassDictListView, ClassDictUpdateListView,
                     ClassEditTableView, BestDishesListView, MyVisitsListView,
-                    VisitsList, DishPhotosList
+                    VisitsList, DishPhotosList, StartView
     # iommitest
                     )
 # from iommi import Form
@@ -23,8 +23,10 @@ from .views import (CafeFormsetView, VisitView, TestView, add_dish_library, Tabl
 app_name = 'core'
 urlpatterns = [
 
-    path('',
-         RedirectView.as_view(url='/dishes/', permanent=True), name='pages-root'),
+    # path('',
+    #      RedirectView.as_view(url='/dishes/', permanent=True), name='pages-root'),
+
+    path('', StartView.as_view(), name='start'),
     path('cafes/', CafesListView.as_view(), name='cafes'),
 
     # url(r'^admin/', include(admin.site.urls)),
