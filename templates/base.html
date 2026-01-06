@@ -15,7 +15,8 @@
                 <meta property="og:url" content="{{ request.build_absolute_uri }}"/>
             {% endblock canonical_url %}
             {% block fb_meta %}{% endblock fb_meta %}
-            <title>{% block title %}{% page_attribute "page_title" %}{% endblock %}</title>
+            <title>CritiFood — обзоры ресторанов и блюд</title>
+            <meta name="description" content="CritiFood — честные обзоры ресторанов, вкусных блюд. Читайте отзывы, сравнивайте меню и выбирайте лучшее для себя.">
             {% block base_css %}{% endblock %}
 {% endspaceless %}{% render_block 'css' %}{% spaceless %}
     {% block page_head %}{% endblock %}
