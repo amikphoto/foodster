@@ -6,7 +6,7 @@ from formset.views import FormViewMixin, IncompleteSelectResponseMixin
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, TypeOfDishes, DishCatalog, DishLibraryModel, \
-    TypeOfKitchen, CulinaryClassModel, DishImageModel, VisitImageModel
+    TypeOfKitchen, CulinaryClassModel, DishImageModel, VisitImageModel, IntroImageModel
 from .forms import CafeFormset, VisitFormset, CafeImageForm, DishForm, VisitForm, CafeForm, testform, DishLibraryForm, DishFormset
 from formset.views import FormCollectionView, EditCollectionView, FormViewMixin, FormView
 from django.http.response import JsonResponse, HttpResponseBadRequest
@@ -98,6 +98,17 @@ def dishinfo(request):
 
 class StartView(TemplateView):
     template_name = "start.html"
+
+    # def get_context_data(self, *args, **kwargs):
+    #     context = self.get_context_data(self, *args, **kwargs)
+    #
+    #     context['images'] = IntroImageModel.objects.all()
+    #     return context
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['images'] = IntroImageModel.objects.all()
+        return context
 
 class TypeEditTableView(TemplateView):
     template_name = "django_tables2/type_row.html"

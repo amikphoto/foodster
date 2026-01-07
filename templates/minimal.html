@@ -21,6 +21,10 @@
     <link href="{% static 'css/carousel.css' %}" rel="stylesheet" crossorigin="anonymous"/>
     <script src="/static/js/fancybox.umd.js"></script>
     <script src="/static/js/carousel.umd.js"></script>
+
+    <link href="{% static 'css/swiper-bundle.min.css' %}" rel="stylesheet" crossorigin="anonymous"/>
+    <script src="/static/js/swiper-bundle.min.js"></script>
+
     <link href="{% static 'css/mycss.css' %}" rel="stylesheet" crossorigin="anonymous">
 {#    <link rel="stylesheet" href="{% static 'location_field/css/location_field.css' %}">#}
 
@@ -43,7 +47,6 @@
 
     <!--bootstrap working-->
     <script src="/static/js/bootstrap.bundle.js"></script>
-{#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>#}
     <script src="/static/js/list.js"></script>
     <script src="/static/js/sort.js"></script>
 
@@ -58,19 +61,7 @@
       });
 	 </script>
 
-{#    <script src="{% static 'location_field/js/vanillapicker.js' %}"></script>#}
-{#    <script>#}
-{#        window.locationFieldsOptions = {#}
-{#            provider: "yandex",#}
-{#            map_zoom: 13,#}
-{#            language: "ru"#}
-{#        };#}
-{#    </script>#}
-{#    <script src="{% static 'location_field/js/form.js' %}"></script>#}
-
 {% endblock %}
-{#{% block iommi_top %}#}
-{#{% endblock %}#}
 {% block content %}
     {% placeholder "Content" %}
 {% endblock content %}

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (CafeModel, CafeImageModel, VisitModel, DishModel, TypeOfDishes,
                      DishCatalog, DishLibraryModel, TypeOfKitchen, CulinaryClassModel,
-                     SiteSettings)
+                     SiteSettings, IntroImageModel)
 # Register your models here.
 
 admin.site.register(VisitModel)
@@ -12,6 +12,7 @@ admin.site.register(DishCatalog)
 admin.site.register(DishLibraryModel)
 admin.site.register(TypeOfKitchen)
 admin.site.register(CulinaryClassModel)
+admin.site.register(IntroImageModel)
 
 class GalleryInLine(admin.TabularInline):
     fk_name = 'cafe_fk'

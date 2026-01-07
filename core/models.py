@@ -202,3 +202,11 @@ class SiteSettings(models.Model):
     def load(cls):
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
+
+class IntroImageModel(models.Model):
+
+    title = models.CharField(max_length=200, default='')
+    image = ResizedImageField(upload_to='media/intro')
+
+    def __str__(self):
+        return self.title

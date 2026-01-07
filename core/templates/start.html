@@ -2,9 +2,99 @@
 {% load cms_tags sekizai_tags menu_tags static %}
 {% load render_table from django_tables2 %}
 {% load django_bootstrap5 %}
+{% load thumbnail %}
 
 {%  block content %}
 
-<!--Начало работы-->
+  <style>
+    html,
+    body {
+      position: relative;
+      height: 100%;
+    }
+
+    .swiper {
+      /*width: 500px;*/
+      /*height: 500px;*/
+      /*transform-style: preserve-3d;*/
+    }
+
+    .swiper-slide {
+      background-position: center;
+      background-size: cover;
+    }
+
+    .swiper-slide img {
+      display: block;
+      width: 100%;
+    }
+  </style>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-10 col-md-6 col-lg-5 col-xl-6">
+                <div class="swiper py-3">
+                    <div id="cardSlider" class="swiper-wrapper mb-8 py-3 bp-0">
+                        {% for image in images %}
+                            <div class="swiper-slide">
+                            {% thumbnail image.image 400x400 crop="smart" upscale=True as im %}
+                                <figure>
+                                    <img
+                                        width=400
+                                        height=400
+                                        src="{{ im.url }}"
+                                        class="img-fluid rounded-circle"
+                                        alt="Square image"
+                                    >
+                                </figure>
+                            </div>
+                        {% endfor %}
+                    </div>
+                  <!-- If we need navigation buttons -->
+                  <div class="swiper-button-prev"></div>
+                  <div class="swiper-button-next"></div>
+
+                  <!-- If we need scrollbar -->
+<!--                  <div class="swiper-scrollbar"></div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const swiper = new Swiper('.swiper', {
+          effect: "flip",
+              flipEffect: {
+                slideShadows: false,   // ❗ отключает тени на слайдах
+                rotate: 0,             // можно убрать поворот
+                stretch: 0             // убрать растяжение
+              },
+
+          // Optional parameters
+          // direction: 'horizontal',
+          loop: true,
+
+          autoplay: {
+            delay: 2000,
+            disableOnInteraction: false,
+          },
+
+          // If we need pagination
+          // pagination: {
+          //   el: '.swiper-pagination',
+          // },
+
+          // Navigation arrows
+          // navigation: {
+          //   nextEl: '.swiper-button-next',
+          //   prevEl: '.swiper-button-prev',
+          // },
+
+          // And if we need scrollbar
+          // scrollbar: {
+          //   el: '.swiper-scrollbar',
+          // },
+        });
+    </script>
 
 {% endblock %}
