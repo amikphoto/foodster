@@ -1,5 +1,5 @@
 <!DOCTYPE html>{% load cms_tags menu_tags sekizai_tags static i18n %}{% spaceless %}
-    <html lang="{{ LANGUAGE_CODE }}" style="height: 100%;">
+<html lang="{{ LANGUAGE_CODE }}" style="height: 100%;" xmlns="http://www.w3.org/1999/html">
         <head>
             <meta charset="utf-8"/>
             <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -25,6 +25,7 @@
     {% block page_head %}{% endblock %}
         <style>
             html, body {
+                padding-top: 22px;
                 height: 100%;
                 margin: 0;
             }
@@ -41,7 +42,209 @@
         </style>
 
     </head>
+
+<!--    <style>-->
+<!--        :root {-->
+<!--          &#45;&#45;bg-rgb-1: 253,251,250;-->
+<!--          &#45;&#45;bg-rgb-2: 253,251,250;-->
+<!--          &#45;&#45;bg-rgb-3: 253,251,250;-->
+<!--          &#45;&#45;bg-rgb-4: 253,251,250;-->
+<!--          &#45;&#45;bg-rgb-5: 253,251,250;-->
+<!--          &#45;&#45;bg-rgb-6: 253,251,250;-->
+<!--        }-->
+
+<!--        [data-bs-theme="dark"] {-->
+<!--          &#45;&#45;bg-rgb-1: 5,5,5;-->
+<!--          &#45;&#45;bg-rgb-2: 5,5,5;-->
+<!--          &#45;&#45;bg-rgb-3: 5,5,5;-->
+<!--          &#45;&#45;bg-rgb-4: 5,5,5;-->
+<!--          &#45;&#45;bg-rgb-5: 5,5,5;-->
+<!--          &#45;&#45;bg-rgb-6: 5,5,5;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            animation: theme 21s linear infinite;-->
+
+<!--            &:after,-->
+<!--            &:before {-->
+<!--                content: '';-->
+<!--                display: block;-->
+<!--                position: fixed;-->
+<!--                z-index: -1;-->
+<!--                top: 0;-->
+<!--                width: 100vw;  // IE/Edge-->
+<!--                height: 100vh; // fallback-->
+<!--                width: 100vmax;-->
+<!--                height: 100vmax;-->
+<!--                background: rgba(var(&#45;&#45;bs-emphasis-color-rgb), 0.03);-->
+<!--                animation: background 90s linear infinite;-->
+<!--            }-->
+
+<!--            &:after {-->
+<!--                left: 15vw;-->
+<!--            }-->
+
+<!--            &:before {-->
+<!--                right: 15vw;-->
+<!--                animation-delay: -30s;-->
+<!--                animation-direction: reverse;-->
+<!--            }-->
+<!--        }-->
+
+<!--        @keyframes theme {-->
+<!--          0%   { background-color: rgba(var(&#45;&#45;bg-rgb-1), 0.95); }-->
+<!--          16%  { background-color: rgba(var(&#45;&#45;bg-rgb-2), 0.95); }-->
+<!--          33%  { background-color: rgba(var(&#45;&#45;bg-rgb-3), 0.95); }-->
+<!--          50%  { background-color: rgba(var(&#45;&#45;bg-rgb-4), 0.95); }-->
+<!--          66%  { background-color: rgba(var(&#45;&#45;bg-rgb-5), 0.95); }-->
+<!--          83%  { background-color: rgba(var(&#45;&#45;bg-rgb-6), 0.95); }-->
+<!--          100% { background-color: rgba(var(&#45;&#45;bg-rgb-1), 0.95); }-->
+<!--                }-->
+
+<!--        @keyframes background {-->
+<!--            0% {-->
+<!--                transform: rotate(0deg);-->
+<!--            }-->
+
+<!--            100% {-->
+<!--                transform: rotate(360deg);-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+      <style>
+        :root {
+          --bg-rgb-1: 253,251,250;
+          --bg-rgb-2: 253,251,250;
+          --bg-rgb-3: 253,251,250;
+          --bg-rgb-4: 253,251,250;
+          --bg-rgb-5: 253,251,250;
+          --bg-rgb-6: 253,251,250;
+        }
+
+        [data-bs-theme="dark"] {
+          --bg-rgb-1: 5,5,5;
+          --bg-rgb-2: 5,5,5;
+          --bg-rgb-3: 5,5,5;
+          --bg-rgb-4: 5,5,5;
+          --bg-rgb-5: 5,5,5;
+          --bg-rgb-6: 5,5,5;
+        }
+
+        body {
+          margin: 0;
+          min-height: 100vh;
+          animation: theme 21s linear infinite;
+          font-family: "PT Sans", sans-serif;
+        }
+
+        body::after,
+        body::before {
+          content: '';
+          display: block;
+          position: fixed;
+          z-index: -1;
+          top: 0;
+          width: 100vw;
+          height: 100vh;
+          width: 100vmax;
+          height: 100vmax;
+          background: rgba(var(--bs-emphasis-color-rgb), 0.03);
+          animation: background 90s linear infinite;
+        }
+
+        body::after {
+          left: 15vw;
+        }
+
+        body::before {
+          right: 15vw;
+          animation-delay: -30s;
+          animation-direction: reverse;
+        }
+
+        @keyframes theme {
+          0%   { background-color: rgba(var(--bg-rgb-1), 0.95); }
+          16%  { background-color: rgba(var(--bg-rgb-2), 0.95); }
+          33%  { background-color: rgba(var(--bg-rgb-3), 0.95); }
+          50%  { background-color: rgba(var(--bg-rgb-4), 0.95); }
+          66%  { background-color: rgba(var(--bg-rgb-5), 0.95); }
+          83%  { background-color: rgba(var(--bg-rgb-6), 0.95); }
+          100% { background-color: rgba(var(--bg-rgb-1), 0.95); }
+        }
+
+        @keyframes background {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        /* === SVG-иконка по центру === */
+        .background-icon {
+          position: fixed;
+          top: 50%;
+          left: 48%;
+          transform: translate(-50%, -50%);
+          width: 100vw;
+          /*max-width: 1200px;*/
+          height: auto;
+          opacity: 0.03;
+          pointer-events: none;
+          z-index: -1;
+          animation: sway 8s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+          0% {
+            transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          }
+          25% {
+            transform: translate(-50%, -50%) rotate(2deg) scale(1.02);
+          }
+          75% {
+            transform: translate(-50%, -50%) rotate(-2deg) scale(0.98);
+          }
+          100% {
+            transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          }
+        }
+
+        [data-bs-theme="dark"] .background-icon {
+          opacity: 0.05;
+        }
+
+        @media (max-width: 768px) {
+          .background-icon {
+               top: 36%;
+               width: 100vw;
+            max-width: 800px;
+          }
+        }
+
+        @media (min-width: 769px) and (max-width: 1200px) {
+          .background-icon {
+            top: 34%;
+            width: 100vw;
+            max-width: 1000px;
+          }
+        }
+
+        @media (min-width: 1201px) and (max-width: 1400px) {
+          .background-icon {
+            top: 43%;
+            width: 100vw;
+            max-width: 1100px;
+          }
+        }
+
+
+      </style>
+
+
     <body {% block body_attrs %}{% endblock %}>
+    <img src="{% static 'restaurant-spoon-svgrepo-com.svg' %}" class="background-icon">
 {% endspaceless %}{% spaceless %}
     {% block navbar %}{% endblock %}
     {% include 'navbar.html' %}
@@ -58,5 +261,9 @@
 {% endspaceless %}{% render_block 'js' %}{% spaceless %}
     {% block end_js %}{% endblock %}
     {% block bottom_css %}{% endblock %}
+
+
+<!--    <div class="utensil utensil&#45;&#45;fork">🍴</div>-->
+<!--    <div class="utensil utensil&#45;&#45;spoon">🍴</div>-->
     </body>
     </html>{% endspaceless %}

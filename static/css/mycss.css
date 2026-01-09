@@ -559,7 +559,7 @@ div#columns:hover figure:not(:hover) {
 /*}*/
 
 .filer-box {
-    border: thin solid lightgray;
+    /*border: thin solid lightgray;*/
     border-radius: 8px;
     padding: 20px;
 }
@@ -702,6 +702,9 @@ div#columns:hover figure:not(:hover) {
     cursor: pointer;         /* опционально: курсор как у кнопки */
 }
 
+.table {
+    --bs-table-bg: rgba(0, 0, 0, .1);
+}
 /*!* Переопределение стилей для nav-tabs в зависимости от темы *!*/
 /*[data-bs-theme="light"] .custom_tab_style1 .nav-tabs {*/
 /*  !*--bs-nav-tabs-border-color: #dee2e6;*!*/

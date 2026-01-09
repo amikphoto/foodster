@@ -1,9 +1,9 @@
 {% load django_tables2 %}
 {% load i18n l10n %}
 {% block table-wrapper %}
-<div class="table-container">
+<div class="table-container rounded-3 overflow-hidden border">
     {% block table %}
-        <table {% render_attrs table.attrs class="table" %}>
+        <table {% render_attrs table.attrs class="table mb-0" %}>
             {% block table.thead %}
             {% if table.show_header %}
                 <thead {{ table.attrs.thead.as_html }}>
