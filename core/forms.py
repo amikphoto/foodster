@@ -197,7 +197,7 @@ class VisitForm(ModelForm):
 
 
         widgets = {
-            'description': Textarea(attrs={'rows': 2}),
+            'description': Textarea(attrs={'rows': 5}),
             'data': DateTimeInput,
             'average_dish_rating': HiddenInput,
         }
