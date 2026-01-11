@@ -1321,3 +1321,6 @@ class DishPhotosList(TemplateView):
         context = super().get_context_data(**kwargs)
         context['images'] = DishImageModel.objects.filter(dish_fk__dish_fk=self.kwargs['pk'])
         return context
+
+class Privacy(TemplateView):
+    template_name = 'policy.html'

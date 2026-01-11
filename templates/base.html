@@ -194,5 +194,37 @@
     {% block end_js %}{% endblock %}
     {% block bottom_css %}{% endblock %}
 
+
+    <div id="cookie-banner" class="cookie-banner hidden">
+      <p>Мы используем файлы cookie, чтобы улучшить работу сайта и персонализировать контент. Продолжая использовать сайт, вы соглашаетесь с использованием cookie.</p>
+      <div class="cookie-buttons">
+        <button id="accept-cookies">Принимаю</button>
+        <a href="/privacy/" target="_blank">Подробнее</a>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const banner = document.getElementById('cookie-banner');
+        const acceptBtn = document.getElementById('accept-cookies');
+
+        // Проверяем, было ли уже согласие
+        if (!localStorage.getItem('cookiesAccepted')) {
+          banner.classList.remove('hidden');
+        }
+
+        acceptBtn?.addEventListener('click', function () {
+          localStorage.setItem('cookiesAccepted', 'true');
+          banner.classList.add('hidden');
+
+          // Здесь можно запустить аналитику, например:
+          // initAnalytics();
+        });
+
+        // Пример отложенной инициализации аналитики
+        // function initAnalytics() {
+        //   // Загрузка Яндекс.Метрики, GA и т.п.
+        // }
+      });
+    </script>
     </body>
     </html>{% endspaceless %}
