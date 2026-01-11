@@ -688,7 +688,6 @@ div#columns:hover figure:not(:hover) {
   font-weight: 500;
 }
 
-
 .plain-link a {
     color: inherit;          /* наследует цвет текста родителя */
     text-decoration: none;   /* убирает подчёркивание */
@@ -754,3 +753,4 @@ div#columns:hover figure:not(:hover) {
   border: 1px solid #0d6efd;
   background: transparent;
 }
+
