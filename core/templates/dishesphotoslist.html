@@ -12,16 +12,16 @@
                 <a
                     class="d-block image-wrapper"
                     style="min-width: 200px; max-width: 300px"
-                    data-src="/media/{{ image.image }}" 
+                    data-src="/media/{{ image.image }}"
                     data-fancybox="gallery"
                     data-caption='
-                        <a href="/cafe/{{ image.dish_fk.visit_fk.cafe_fk.id }}/{{ image.dish_fk.visit_fk.id }}/{{ image.dish_fk.id }}" 
+                        <a href="/cafe/{{ image.dish_fk.visit_fk.cafe_fk.id }}/{{ image.dish_fk.visit_fk.id }}/{{ image.dish_fk.id }}"
                            class="btn btn-success btn-sm shadow-sm"
                            onclick="event.stopPropagation()">
                             <i class="bi bi-info-circle"></i> Перейти к блюду
                         </a>
                     '>
-                    
+
                     <img
                         src="{{ im.url }}"
                         class="rounded"

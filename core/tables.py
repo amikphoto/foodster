@@ -105,6 +105,8 @@ class BestDishesTable(tables.Table):
                                 )
     group_average = tables.Column(verbose_name='Средний балл',
                                 )
+    visit_fk = tables.Column(verbose_name='Визит',
+                                )
     visit_fk__cafe_fk__title = tables.Column(verbose_name='Название кафе',
                                  attrs={'td': {'class': 'd-none d-md-table-cell'},
                                         'th': {'class': 'd-none d-md-table-cell'}

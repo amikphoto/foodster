@@ -51,15 +51,54 @@
     <script src="/static/js/sort.js"></script>
 
 
-    <script>
-       Fancybox.bind('[data-fancybox]', {
-        caption: (fancybox, slide) => {
-          const caption = slide.caption || "";
+<!--    <script>-->
+<!--       Fancybox.bind('[data-fancybox]', {-->
+<!--        caption: (fancybox, slide) => {-->
+<!--          const caption = slide.caption || "";-->
 
-          return `<br /> ${caption}`;
-        },
-      });
-	 </script>
+<!--          return `<br /> ${caption}`;-->
+<!--        },-->
+<!--      });-->
+<!--	 </script>-->
+    <script>
+        Fancybox.bind('[data-fancybox="gallery"]', {
+          compact: false,
+          idle: false,
+
+          animated: false,
+          showClass: false,
+          hideClass: false,
+
+          dragToClose: false,
+
+          Images: {
+            // Disable animation from/to thumbnail on start/close
+            zoom: false,
+          },
+
+          Toolbar: {
+            display: {
+              left: [],
+              middle: [],
+              right: ['close', 'rotateCCW', 'rotateCW'],
+            },
+          },
+
+          Thumbs: {
+            type: 'classic',
+            Carousel: {
+              center: true,
+            },
+          },
+
+          caption: (fancybox, slide) => {
+            const caption = slide.caption || "";
+
+            return `<br /> ${caption}`;
+          },
+
+        });
+    </script>
 
 {% endblock %}
 {% block content %}

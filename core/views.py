@@ -1081,7 +1081,7 @@ class BestDishesListView(SingleTableMixin, FilterView):
     table_class = BestDishesTable
     # queryset = model.objects.values_list('dish_fk', flat=True).distinct()
     # queryset = model.objects.values('dish_fk').annotate(group_count = Count('pk'))
-    queryset = model.objects.values('dish_fk','dish_fk__name','visit_fk__cafe_fk','visit_fk__cafe_fk__title').annotate(group_count=Count('pk'), group_average=Avg('rating')).order_by('-group_average')
+    queryset = model.objects.values('dish_fk','dish_fk__name','visit_fk__cafe_fk','visit_fk__cafe_fk','visit_fk__cafe_fk__title').annotate(group_count=Count('pk'), group_average=Avg('rating')).order_by('-group_average')
     # queryset = model.objects.all().distinct('pk')
     paginate_by = 10
     filterset_class = BestDishesFilterSet
@@ -1311,7 +1311,6 @@ class VisitsList(SingleTableMixin, FilterView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['dish'] = DishModel.objects.get(pk=self.kwargs.get('pk'))
         return context
 
 class DishPhotosList(TemplateView):
@@ -1322,3 +1321,6 @@ class DishPhotosList(TemplateView):
         context = super().get_context_data(**kwargs)
         context['images'] = DishImageModel.objects.filter(dish_fk__dish_fk=self.kwargs['pk'])
         return context
+
+class Privacy(TemplateView):
+    template_name = 'policy.html'

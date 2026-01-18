@@ -43,74 +43,6 @@
 
     </head>
 
-<!--    <style>-->
-<!--        :root {-->
-<!--          &#45;&#45;bg-rgb-1: 253,251,250;-->
-<!--          &#45;&#45;bg-rgb-2: 253,251,250;-->
-<!--          &#45;&#45;bg-rgb-3: 253,251,250;-->
-<!--          &#45;&#45;bg-rgb-4: 253,251,250;-->
-<!--          &#45;&#45;bg-rgb-5: 253,251,250;-->
-<!--          &#45;&#45;bg-rgb-6: 253,251,250;-->
-<!--        }-->
-
-<!--        [data-bs-theme="dark"] {-->
-<!--          &#45;&#45;bg-rgb-1: 5,5,5;-->
-<!--          &#45;&#45;bg-rgb-2: 5,5,5;-->
-<!--          &#45;&#45;bg-rgb-3: 5,5,5;-->
-<!--          &#45;&#45;bg-rgb-4: 5,5,5;-->
-<!--          &#45;&#45;bg-rgb-5: 5,5,5;-->
-<!--          &#45;&#45;bg-rgb-6: 5,5,5;-->
-<!--        }-->
-
-<!--        body {-->
-<!--            animation: theme 21s linear infinite;-->
-
-<!--            &:after,-->
-<!--            &:before {-->
-<!--                content: '';-->
-<!--                display: block;-->
-<!--                position: fixed;-->
-<!--                z-index: -1;-->
-<!--                top: 0;-->
-<!--                width: 100vw;  // IE/Edge-->
-<!--                height: 100vh; // fallback-->
-<!--                width: 100vmax;-->
-<!--                height: 100vmax;-->
-<!--                background: rgba(var(&#45;&#45;bs-emphasis-color-rgb), 0.03);-->
-<!--                animation: background 90s linear infinite;-->
-<!--            }-->
-
-<!--            &:after {-->
-<!--                left: 15vw;-->
-<!--            }-->
-
-<!--            &:before {-->
-<!--                right: 15vw;-->
-<!--                animation-delay: -30s;-->
-<!--                animation-direction: reverse;-->
-<!--            }-->
-<!--        }-->
-
-<!--        @keyframes theme {-->
-<!--          0%   { background-color: rgba(var(&#45;&#45;bg-rgb-1), 0.95); }-->
-<!--          16%  { background-color: rgba(var(&#45;&#45;bg-rgb-2), 0.95); }-->
-<!--          33%  { background-color: rgba(var(&#45;&#45;bg-rgb-3), 0.95); }-->
-<!--          50%  { background-color: rgba(var(&#45;&#45;bg-rgb-4), 0.95); }-->
-<!--          66%  { background-color: rgba(var(&#45;&#45;bg-rgb-5), 0.95); }-->
-<!--          83%  { background-color: rgba(var(&#45;&#45;bg-rgb-6), 0.95); }-->
-<!--          100% { background-color: rgba(var(&#45;&#45;bg-rgb-1), 0.95); }-->
-<!--                }-->
-
-<!--        @keyframes background {-->
-<!--            0% {-->
-<!--                transform: rotate(0deg);-->
-<!--            }-->
-
-<!--            100% {-->
-<!--                transform: rotate(360deg);-->
-<!--            }-->
-<!--        }-->
-<!--    </style>-->
       <style>
         :root {
           --bg-rgb-1: 253,251,250;
@@ -263,7 +195,36 @@
     {% block bottom_css %}{% endblock %}
 
 
-<!--    <div class="utensil utensil&#45;&#45;fork">🍴</div>-->
-<!--    <div class="utensil utensil&#45;&#45;spoon">🍴</div>-->
+    <div id="cookie-banner" class="cookie-banner hidden">
+      <p>Мы используем файлы cookie, чтобы улучшить работу сайта и персонализировать контент. Продолжая использовать сайт, вы соглашаетесь с использованием cookie.</p>
+      <div class="cookie-buttons">
+        <button id="accept-cookies">Принимаю</button>
+        <a href="/privacy/" target="_blank">Подробнее</a>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const banner = document.getElementById('cookie-banner');
+        const acceptBtn = document.getElementById('accept-cookies');
+
+        // Проверяем, было ли уже согласие
+        if (!localStorage.getItem('cookiesAccepted')) {
+          banner.classList.remove('hidden');
+        }
+
+        acceptBtn?.addEventListener('click', function () {
+          localStorage.setItem('cookiesAccepted', 'true');
+          banner.classList.add('hidden');
+
+          // Здесь можно запустить аналитику, например:
+          // initAnalytics();
+        });
+
+        // Пример отложенной инициализации аналитики
+        // function initAnalytics() {
+        //   // Загрузка Яндекс.Метрики, GA и т.п.
+        // }
+      });
+    </script>
     </body>
     </html>{% endspaceless %}
