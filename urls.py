@@ -28,7 +28,9 @@ from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     # path(r'^', include('djangocms_forms.urls')),
+    # path('taggit_autosuggest/', include('taggit_autosuggest.urls')),
     # path(r'^taggit_autosuggest/', include('taggit_autosuggest.urls')),
     path('', include('core.urls')),
     # path('rating/', include('rating.urls')),
@@ -37,6 +39,7 @@ urlpatterns = [
     path('system/', include('system.urls')),
     # url(r'^dish-autocomplete/$', DishAutocomplete.as_view(create_field='title'), name='dish-autocomplete'),
     # url(r'^typeofkitchen-autocomplete/$', TypeOfKitchenAutocomplete.as_view(create_field='title'), name='typeofkitchen-autocomplete'),
+
     path(
         'jsi18n/',
         cache_page(3600)(JavaScriptCatalog.as_view(packages=['formset'])),
@@ -57,6 +60,7 @@ if settings.DEBUG:
 
 
 urlpatterns.append(path('', include('cms.urls')))
+
 
 # the new django admin sidebar is bad UX in django CMS custom admin views.
 # admin.site.enable_nav_sidebar = False

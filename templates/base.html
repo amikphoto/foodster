@@ -177,7 +177,7 @@
 
     <body {% block body_attrs %}{% endblock %}>
     <img src="{% static 'restaurant-spoon-svgrepo-com.svg' %}" class="background-icon">
-{% endspaceless %}{% spaceless %}
+{% endspaceless %}{% cms_toolbar %}{% spaceless %}
     {% block navbar %}{% endblock %}
     {% include 'navbar.html' %}
     <main>

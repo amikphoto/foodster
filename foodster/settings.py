@@ -59,7 +59,7 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 # Application definition
 
 INSTALLED_APPS = [
-    # 'djangocms_admin_style',
+    'djangocms_admin_style',
 
     # 'admin_interface',
     # 'colorfield',
@@ -116,7 +116,9 @@ INSTALLED_APPS = [
     # 'djangocms_slider',
     # 'djangocms_thumbnail_slider',
     # the default CKEditor - optional, b        `sed in most projects
-    'djangocms_text_ckeditor',
+    'djangocms_text',
+    'djangocms_text_ckeditor5',
+    # 'djangocms_text.contrib.text_ckeditor4',
 
     # some content plugins - optional, but used in most projects
     # 'djangocms_file',
@@ -144,6 +146,8 @@ INSTALLED_APPS = [
     'djangocms_frontend.contrib.image',
     'djangocms_frontend.contrib.tabs',
     'djangocms_frontend.contrib.utilities',
+    'djangocms_versioning',
+    # 'djangocms_alias',
 
     'django_htmx',
     'foodster',
@@ -155,6 +159,14 @@ INSTALLED_APPS = [
     'core',
     'location_field.apps.DefaultConfig',
 
+    'parler',  # if not already included
+
+    # For now, but probably not needed in the future
+    'taggit',
+    'taggit_autosuggest',
+    'meta',
+    'djangocms_stories',
+
     # 'cafes_cms_integration.apps.CafesCmsIntegrationConfig',
 
     ]
@@ -162,6 +174,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # 'iommi.live_edit.Middleware',
 
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -207,6 +220,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
 
                 'cms.context_processors.cms_settings',
+                'django.template.context_processors.i18n',
                 'sekizai.context_processors.sekizai',
                 'core.context_processors.site_settings',
 
@@ -231,6 +245,15 @@ CMS_TEMPLATES = [
     ('bootstrap5.html', 'Bootstrap5 template'),
 
 ]
+
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'easy_thumbnails.processors.scale_and_crop',
+    'easy_thumbnails.processors.filters',
+    'easy_thumbnails.processors.background',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+)
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -271,12 +294,14 @@ LOGIN_URL = '/system/login/'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
+LANGUAGE_CODE = 'ru'
+
 LANGUAGES = [
-    ('ru-Ru', 'Russia'),
-    # ('en-us', 'English'),
+    ('ru', 'Russia'),
+    # ('en', 'English'),
 ]
 
-LANGUAGE_CODE = 'ru-Ru'
+TEXT_EDITOR = "djangocms_text_ckeditor5.ckeditor5"
 
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
@@ -284,6 +309,16 @@ USE_I18N = True
 USE_TZ = True
 
 SITE_ID = 1
+
+META_USE_SITES = False
+META_INCLUDE_KEYWORDS = False
+META_USE_OG_PROPERTIES = False
+META_USE_TWITTER_PROPERTIES = False
+META_USE_TITLE_TAG = False
+# Or explicitly disable image resolution:
+META_IMAGE_URL = ""  # or None
+META_SITE_PROTOCOL = 'https'
+META_SITE_DOMAIN = 'www.critifood.ru'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = 'data/media/'
@@ -300,6 +335,8 @@ RATING_SETTINGS = {
 
 
 CMS_CONFIRM_VERSION4 = True
+CMS_URL_OVERWRITE = True
+CMS_MENU_TITLE_OVERWRITE = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

@@ -28,6 +28,7 @@ from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('taggit_autosuggest/', include('taggit_autosuggest.urls')),
     # path(r'^', include('djangocms_forms.urls')),
     # path(r'^taggit_autosuggest/', include('taggit_autosuggest.urls')),
     path('', include('core.urls')),
