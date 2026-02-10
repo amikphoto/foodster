@@ -3,12 +3,13 @@ from django.forms.models import ModelForm, ModelChoiceField, construct_instance,
 from django.template.context_processors import request
 from django.urls import reverse
 from location_field.widgets import LocationWidget
+from packaging.utils import _
 
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, DishLibraryModel, DishCatalog, VisitImageModel, DishImageModel, CulinaryClassModel, TypeOfKitchen
 from django.forms import inlineformset_factory, Textarea, SelectMultiple, fields
 from django.forms.fields import IntegerField, FileField, CharField, ChoiceField, MultipleChoiceField, BooleanField
 from django.forms.widgets import HiddenInput, RadioSelect, NumberInput, CheckboxSelectMultiple, Widget, ChoiceWidget, Select
-from formset.widgets import DateInput, Selectize, SelectizeMultiple
+from formset.widgets import DateInput, Selectize, SelectizeMultiple, DualSortableSelector
 from formset.collection import FormCollection
 from formset.renderers.bootstrap import FormRenderer
 from formset.widgets import DatePicker, DateTimePicker, DateTimeInput, Button
@@ -966,7 +967,95 @@ class VisitFormset(FormCollection):
     visit = VisitForm()
     visit_images = VisitImageCollection()
 
-    # visit_dishes = DishFormCollection()
-    # issue = ChangeDishLibraryForm()
+
+from .models import TagSelector
+
+# core/forms.py
+from django import forms
+from core.models import TagSelector
+# from core.widgets import CafeTagWidget, DishTagWidget, CategoryTagWidget
+from taggit.models import Tag
 
 
+class TagSelectorForm(forms.ModelForm):
+    """Форма для плагина с разделенными полями тегов по типам"""
+
+    cafe_tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.none(),
+        # widget=CafeTagWidget(),
+        required=False,
+        label=_('☕ Cafes'),
+        help_text=_('Select cafes for display')
+    )
+
+    dish_tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.none(),
+        # widget=DishTagWidget(),
+        required=False,
+        label=_('🍽️ Dishes'),
+        help_text=_('Select dishes for display')
+    )
+
+    category_tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.none(),
+        # widget=CategoryTagWidget(),
+        required=False,
+        label=_('🏷️ Categories'),
+        help_text=_('Select categories for display')
+    )
+
+    class Meta:
+        model = TagSelector
+        fields = '__all__'
+        exclude = ['tags']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Инициализируем поля тегов
+        from core.models import CafeModel, DishModel, TypeOfKitchen
+
+        cafe_names = CafeModel.objects.values_list('title', flat=True)
+        dish_names = DishModel.objects.values_list('dish_fk__dishcatalog_fk__name', flat=True)
+        TypeOfKitchen_names = TypeOfKitchen.objects.values_list('name', flat=True)
+
+        # Устанавливаем корректные queryset
+        self.fields['cafe_tags'].queryset = Tag.objects.filter(name__in=cafe_names)
+        self.fields['dish_tags'].queryset = Tag.objects.filter(name__in=dish_names)
+        self.fields['category_tags'].queryset = Tag.objects.filter(name__in=TypeOfKitchen_names)
+
+        # Если редактируем существующий плагин
+        if self.instance.pk and self.instance.tags.exists():
+            # Разделяем теги по типам
+            selected_tags = self.instance.tags.all()
+            cafe_tags = [tag for tag in selected_tags if tag.name in cafe_names]
+            dish_tags = [tag for tag in selected_tags if tag.name in dish_names]
+            category_tags = [tag for tag in selected_tags
+                             if tag.name in TypeOfKitchen_names]
+
+            # Устанавливаем начальные значения
+            self.fields['cafe_tags'].initial = cafe_tags
+            self.fields['dish_tags'].initial = dish_tags
+            self.fields['category_tags'].initial = category_tags
+
+    def save(self, commit=True):
+        """Сохраняем теги в стандартное поле тегов"""
+        instance = super().save(commit=False)
+
+        if commit:
+            instance.save()
+            self.save_m2m()
+
+        # Объединяем все теги и сохраняем в стандартное поле тегов
+        all_tags = list(self.cleaned_data['cafe_tags']) + \
+                   list(self.cleaned_data['dish_tags']) + \
+                   list(self.cleaned_data['category_tags'])
+
+        # Очищаем старые теги
+        instance.tags.clear()
+
+        # Добавляем новые теги
+        for tag in all_tags:
+            instance.tags.add(tag)
+
+        return instance

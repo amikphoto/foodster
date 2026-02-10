@@ -1,7 +1,9 @@
 from django.contrib import admin
+
+from .forms import TagSelectorForm
 from .models import (CafeModel, CafeImageModel, VisitModel, DishModel, TypeOfDishes,
                      DishCatalog, DishLibraryModel, TypeOfKitchen, CulinaryClassModel,
-                     SiteSettings, IntroImageModel)
+                     SiteSettings, IntroImageModel, TagSelector)
 # Register your models here.
 
 admin.site.register(VisitModel)
@@ -29,3 +31,8 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         # Запрещаем создавать новые записи
         return False
+
+
+@admin.register(TagSelector)
+class TagSelectorAdmin(admin.ModelAdmin):
+    form = TagSelectorForm

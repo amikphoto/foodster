@@ -147,6 +147,7 @@ INSTALLED_APPS = [
     'djangocms_frontend.contrib.tabs',
     'djangocms_frontend.contrib.utilities',
     'djangocms_versioning',
+    'unidecode',
     # 'djangocms_alias',
 
     'django_htmx',
@@ -222,7 +223,6 @@ TEMPLATES = [
                 'cms.context_processors.cms_settings',
                 'django.template.context_processors.i18n',
                 'sekizai.context_processors.sekizai',
-                'core.context_processors.site_settings',
 
             ],
         },
@@ -333,6 +333,7 @@ RATING_SETTINGS = {
 # ICON  # path of rating icon
 # HEIGHT = '2rem'  # Height of icon with unit
 
+TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING = True
 
 CMS_CONFIRM_VERSION4 = True
 CMS_URL_OVERWRITE = True

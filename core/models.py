@@ -5,6 +5,12 @@ from django.utils.functional import empty
 from django_resized import ResizedImageField
 from django.contrib.contenttypes.fields import GenericRelation
 from location_field.models.plain import PlainLocationField
+from taggit.managers import TaggableManager
+from django.db import models
+from cms.models.pluginmodel import CMSPlugin
+from taggit.models import Tag
+from django.utils.translation import gettext_lazy as _
+
 
 # from rating.models import Rating
 
@@ -22,6 +28,11 @@ class TypeOfDishes(models.Model):
 class DishCatalog(models.Model):
     name = models.CharField(max_length=200,)
     # type_fk = models.ForeignKey(TypeOfDishes, on_delete=models.CASCADE, null=True, related_name='type_dishes',)
+
+    tags = TaggableManager(
+        blank=True,
+        verbose_name=_('Tags')
+    )
 
     class Meta:
         verbose_name_plural = "DishesCatalog"
@@ -50,6 +61,10 @@ class CafeModel(models.Model):
 
     date_created = models.DateTimeField(default=timezone.now)
 
+    tags = TaggableManager(
+        blank=True,
+        verbose_name=_('Tags')
+    )
 
     class Meta:
         verbose_name_plural = "Cafes"
@@ -117,6 +132,11 @@ class CulinaryClassModel(models.Model):
 class TypeOfKitchen(models.Model):
     name = models.CharField(max_length=200)
 
+    tags = TaggableManager(
+        blank=True,
+        verbose_name=_('Tags')
+    )
+
     def __str__(self):
         return self.name
 
@@ -128,6 +148,8 @@ class DishLibraryModel(models.Model):
     cafe_fk = models.ForeignKey(CafeModel, on_delete=models.CASCADE, verbose_name='', null=True, blank=True)
     # CulinaryClassModel_fk = models.ForeignKey(CulinaryClassModel, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Кулинарные классы')
     CulinaryClassModel_fk = models.ManyToManyField(CulinaryClassModel, verbose_name='Кулинарные классы')
+
+    tags = TaggableManager()
 
     def __str__(self):
         return self.name
@@ -145,6 +167,8 @@ class DishModel(models.Model):
     visit_fk = models.ForeignKey(VisitModel, on_delete=models.CASCADE, related_name='visit_dishes')
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    tags = TaggableManager()
 
     price = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
@@ -210,3 +234,39 @@ class IntroImageModel(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TagSelector(CMSPlugin):
+    """Модель плагина для хранения выбранных тегов"""
+    tags = models.ManyToManyField(
+        Tag,
+        blank=True,
+        related_name='tag_selector_plugins',
+        verbose_name=_('Selected Tags')
+    )
+    # tag_type_filter = models.CharField(
+    #     max_length=20,
+    #     choices=[
+    #         ('all', _('All Tags')),
+    #         ('cafe', _('Cafes')),
+    #         ('dish', _('Dishes')),
+    #         ('category', _('Categories')),
+    #     ],
+    #     default='all',
+    #     verbose_name=_('Tag Type Filter')
+    # )
+    # show_count = models.BooleanField(
+    #     default=True,
+    #     verbose_name=_('Show Tag Count')
+    # )
+    # limit = models.PositiveIntegerField(
+    #     default=0,
+    #     verbose_name=_('Limit (0 = no limit)')
+    # )
+    #
+    # def copy_relations(self, old_instance):
+    #     """Копируем связи при копировании плагина"""
+    #     self.tags.set(old_instance.tags.all())
+
+    def __str__(self):
+        return f'Tag Selector ({self.tags.count()} tags)'

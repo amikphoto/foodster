@@ -1,7 +1,46 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from core.models import DishModel, VisitModel
+from core.models import DishModel, VisitModel, CafeModel, TypeOfKitchen, DishCatalog
+from unidecode import unidecode
+from django.utils.text import slugify
 
+from taggit.models import Tag
+
+@receiver(post_save, sender=TypeOfKitchen)
+def sync_type_tag(sender, instance, created, **kwargs):
+        if instance.name:
+                # Добавляем тег через TaggableManager (автоматически создает связь)
+                instance.tags.add(instance.name)
+
+                tag = Tag.objects.get(name=instance.name)
+                transliterated_name = unidecode(instance.name)
+                tag.slug = slugify(transliterated_name)
+                tag.save()
+
+
+@receiver(post_save, sender=DishCatalog)
+def sync_dish_tag(sender, instance, created, **kwargs):
+        print(instance)
+        if instance.name:
+                # Добавляем тег через TaggableManager (автоматически создает связь)
+                instance.tags.add(instance.name)
+
+                tag = Tag.objects.get(name=instance.name)
+                transliterated_name = unidecode(instance.name)
+                tag.slug = slugify(transliterated_name)
+                tag.save()
+
+
+@receiver(post_save, sender=CafeModel)
+def sync_cafe_tag(sender, instance, created, **kwargs):
+        if instance.title:
+                # Добавляем тег через TaggableManager (автоматически создает связь)
+                instance.tags.add(instance.title)
+
+                tag = Tag.objects.get(name=instance.title)
+                transliterated_name = unidecode(instance.title)
+                tag.slug = slugify(transliterated_name)
+                tag.save()
 
 @receiver(post_save, sender=DishModel)
 def raiting_dish_update(sender, created ,instance, **kwargs):

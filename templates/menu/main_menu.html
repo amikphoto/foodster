@@ -1,0 +1,12 @@
+<!-- templates/menu/main_menu.html -->
+{% load menu_tags %}
+<ul class="navbar-nav">
+    {% for child in children %}
+        <li class="nav-item{% if child.selected %} active{% endif %}">
+            <a href="{{ child.get_absolute_url }}"
+               class="nav-link{% if child.selected %} active{% endif %}">
+                {{ child.title }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
