@@ -1,0 +1,172 @@
+<!-- templates/cms/plugins/tag_selector.html -->
+{% load i18n %}
+
+<div class="tag-selector-plugin">
+    {% if cafe_tags %}
+<!--        <div class="tag-group cafe-tags">-->
+            <div class="tag-list">
+                {% for item in cafe_tags %}
+                    {% if item.url %}
+                        <a href="{{ item.url }}"
+                           class="tag tag-cafe"
+                           title="{{ item.tag.name }}">
+                            {{ item.tag.name }}
+                            {% if show_count %}
+                                <span class="tag-count">{{ item.tag.taggit_taggeditem_items.count }}</span>
+                            {% endif %}
+                        </a>
+                    {% else %}
+                        <span class="tag tag-cafe disabled">
+                            {{ item.tag.name }}
+                            {% if show_count %}
+                                <span class="tag-count">{{ item.tag.taggit_taggeditem_items.count }}</span>
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+<!--            </div>-->
+<!--        </div>-->
+    {% endif %}
+
+    {% if dish_tags %}
+<!--        <div class="tag-group dish-tags">-->
+<!--            <div class="tag-list">-->
+                {% for item in dish_tags %}
+                    {% if item.url %}
+                        <a href="{{ item.url }}"
+                           class="tag tag-dish"
+                           title="{{ item.tag.name }}">
+                            {{ item.tag.name }}
+                            {% if show_count %}
+                                <span class="tag-count">{{ item.tag.taggit_taggeditem_items.count }}</span>
+                            {% endif %}
+                        </a>
+                    {% else %}
+                        <span class="tag tag-dish disabled">
+                            {{ item.tag.name }}
+                            {% if show_count %}
+                                <span class="tag-count">{{ item.tag.taggit_taggeditem_items.count }}</span>
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+<!--            </div>-->
+<!--        </div>-->
+    {% endif %}
+
+    {% if category_tags %}
+<!--        <div class="tag-group category-tags">-->
+<!--            <div class="tag-list">-->
+                {% for item in category_tags %}
+                    <div
+                       class="tag tag-category"
+                       title="{{ item.tag.name }}">
+                        {{ item.tag.name }}
+                        {% if show_count %}
+                            <span class="tag-count">{{ item.tag.taggit_taggeditem_items.count }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+<!--            </div>-->
+        </div>
+    {% endif %}
+
+</div>
+
+<style>
+.tag-selector-plugin {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.tag-group {
+    margin-bottom: 20px;
+}
+
+.tag-group-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.tag-group-title .tag-icon {
+    margin-right: 8px;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.tag-cafe {
+    background-color: #FFEBEB;
+    color: #FF6B6B;
+    border-color: #FF6B6B;
+}
+
+.tag-cafe:hover {
+    background-color: #FF6B6B;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.tag-cafe.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.tag-dish {
+    background-color: #E6F7F7;
+    color: #4ECDC4;
+    border-color: #4ECDC4;
+}
+
+.tag-dish:hover {
+    background-color: #4ECDC4;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.tag-dish.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.tag-category {
+    background-color: #E6F3F9;
+    color: #45B7D1;
+    border-color: #45B7D1;
+}
+
+.tag-category:hover {
+    background-color: #45B7D1;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.tag-count {
+    margin-left: 4px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.no-tags {
+    color: #999;
+    text-align: center;
+    padding: 20px;
+}
+</style>
