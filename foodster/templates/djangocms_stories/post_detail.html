@@ -5,7 +5,7 @@
 {% block title %}{{ post_content.title }}{% endblock %}
 
 {% block content_blog %}{% spaceless %}
-<article id="post-{{ post_content.slug }}" class="post-item post-detail container bg-light w-75 gx-0">
+<article id="post-{{ post_content.slug }}" class="post-item post-detail container bg-body w-75 gx-0">
         {% if post_content.post.app_config.use_placeholder and not post_content.post.main_image_id and post_content.media %}
             <div class="blog-visual">{% placeholder "media" %}</div>
         {% else %}
