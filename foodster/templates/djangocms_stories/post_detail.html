@@ -10,7 +10,6 @@
             <div class="blog-visual">{% placeholder "media" %}</div>
         {% else %}
             <div class="blog-visual container bg-secondary bg-opacity-10 post-detail gx-0">
-<!--                {% thumbnail post_content.post.main_image post_content.post.full_image_options.size crop=post_content.post.full_image_options.crop upscale=post_content.post.full_image_options.upscale subject_location=post_content.post.main_image.subject_location as main_image %}-->
                 {% thumbnail post_content.post.main_image 1920x1080 as main_image %}
                 <img src="{{ main_image.url }}" alt="{{ post_content.post.main_image.default_alt_text }}" width="{{ main_image.width }}" height="{{ main_image.height }}" class="img-fluid container-lg h-auto gx-0" />
             </div>
