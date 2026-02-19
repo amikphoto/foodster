@@ -242,7 +242,7 @@ CMS_TEMPLATES = [
     # a minimal template to get started with
     ('base.html', 'Base template'),
     ('minimal.html', 'Minimal template'),
-    ('bootstrap5.html', 'Bootstrap5 template'),
+    # ('bootstrap5.html', 'Bootstrap5 template'),
 
 ]
 
