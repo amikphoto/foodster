@@ -904,7 +904,7 @@ class Cafe_cab(EditCollectionView):
 
     def get_success_url(self):
         # return self.request.META.get('HTTP_REFERER')
-        return "/cafe/" + str(self.kwargs.get('pk')) + "/?way=list"
+        return "/cafe/" + str(self.object.pk) + "/?way=list"
 
 class VisitCab(EditCollectionView):
     model = VisitModel
@@ -930,7 +930,7 @@ class VisitCab(EditCollectionView):
     def get_success_url(self):
         # return "/cafe/"+str(VisitModel.objects.get(pk=self.kwargs.get('cpk')).cafe_fk.id)+"/"+str(VisitModel.objects.get(pk=self.kwargs.get('cpk')).id)+"/?way = list"
         # return reverse('core:cafe_cab', kwargs={'pk': self.kwargs.get('cpk')})
-        return "/cafe/"+str(self.kwargs.get('cpk'))+"/"+str(self.kwargs.get('pk'))+"/?way=list"
+        return "/cafe/"+str(self.kwargs.get('cpk'))+"/"+str(self.object.pk)+"/?way=list"
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get(self.pk_url_kwarg)
