@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import forms
 from django.forms.models import ModelForm, ModelChoiceField, construct_instance, model_to_dict
 from django.template.context_processors import request
@@ -202,6 +204,15 @@ class VisitForm(ModelForm):
             'data': DateTimeInput,
             'average_dish_rating': HiddenInput,
         }
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #
+    #     # Проверяем, создаем ли мы новый объект (instance еще не сохранен в БД)
+    #     if not self.instance.pk:
+    #         # Устанавливаем начальное значение только если поле пустое
+    #         if not self.initial.get('data'):
+    #             self.fields['data'].initial = datetime.now()
 
     # def construct_instance(self, main_object):
     #     # assert not self.partial

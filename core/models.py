@@ -88,7 +88,7 @@ class CafeImageModel(models.Model):
 
 class VisitModel(models.Model):
 
-    data = models.DateTimeField(default=timezone.now, verbose_name="Дата визита")
+    data = models.DateTimeField(verbose_name="Дата визита")
     cafe_fk = models.ForeignKey(CafeModel, on_delete=models.CASCADE)
     description = models.TextField(verbose_name="Описание визита")
     average_dish_rating = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="Рейтинг блюд визита")

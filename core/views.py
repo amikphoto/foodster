@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Count, Avg
 from django.views.generic import UpdateView, FormView, TemplateView
 from django.forms.models import construct_instance
@@ -916,6 +918,13 @@ class VisitCab(EditCollectionView):
         context = super(EditCollectionView, self).get_context_data(*args, **kwargs)
         context['way'] = self.request.GET.get("way")
         context['cafe_fk'] = self.kwargs.get('cpk')
+
+        if 'pk' not in self.kwargs and 'slug' not in self.kwargs:
+            if 'visit' not in context['form_collection'].initial:
+                context['form_collection'].initial['visit'] = {}
+
+            context['form_collection'].initial['visit']['data'] = datetime.now()
+
         if 'pk' in self.kwargs:
             context['images'] = VisitImageModel.objects.filter(visit_fk=self.kwargs['pk'])
 
