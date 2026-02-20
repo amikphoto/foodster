@@ -13,7 +13,7 @@
                         {% if column.orderable %}
                             <a hx-get="{{ request.path }}{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
                               hx-trigger="click"
-                              hx-target=".table"
+                              hx-target=".table-container"
                               hx-swap="innerHTML"
 {#                              hx-indicator=".progress"#}
                               style="cursor: pointer;">
@@ -70,7 +70,7 @@
                 <li class="previous page-item">
                     <a hx-get="{{ request.path }}{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
                       hx-trigger="click"
-                      hx-target="#visitstable"
+                      hx-target=".table-container"
                       hx-swap="innerHTML"
                       hx-indicator=".progress"
                        class="page-link">
@@ -86,7 +86,7 @@
                 <li class="page-item{% if table.page.number == p %} active{% endif %}">
                     <a class="page-link" {% if p != '...' %}hx-get="{{ request.path }}{% querystring table.prefixed_page_field=p %}"
                       hx-trigger="click"
-                      hx-target="#visitstable"
+                      hx-target=".table-container"
                       hx-swap="innerHTML"
                       hx-indicator=".progress"
                        {% endif %}>
@@ -101,7 +101,7 @@
                 <li class="next page-item">
                     <a hx-get="{{ request.path }}{% querystring table.prefixed_page_field=table.page.next_page_number %}"
                       hx-trigger="click"
-                      hx-target="#visitstable"
+                      hx-target=".table-container"
                       hx-swap="innerHTML"
                       hx-indicator=".progress"
                        class="page-link">

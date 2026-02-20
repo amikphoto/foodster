@@ -116,7 +116,7 @@ class BestDishesTable(tables.Table):
 
     class Meta:
         model = DishModel
-        exclude = ()
+        exclude = ['visit_fk']
         template_name = "django_tables2/bootstrap5_bestdishes.html"
         fields = ['image','dish_info','dish_fk__name','visit_fk__cafe_fk__title','group_count','group_average']
 
