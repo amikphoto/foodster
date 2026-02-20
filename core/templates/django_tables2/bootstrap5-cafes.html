@@ -13,7 +13,7 @@
                         {% if column.orderable %}
                             <a hx-get="/cafes/{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
                               hx-trigger="click"
-                              hx-target=".table"
+                              hx-target=".table-container"
                               hx-swap="innerHTML"
                               hx-indicator=".progress"
                               style="cursor: pointer;">
