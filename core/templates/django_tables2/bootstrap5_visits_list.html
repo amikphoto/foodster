@@ -13,8 +13,8 @@
                         {% if column.orderable %}
                             <a hx-get="{{ request.path }}{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
                               hx-trigger="click"
-                              hx-target=".table"
-                              hx-swap="innerHTML"
+                              hx-target=".table-container"
+                              hx-swap="outerHTML"
 {#                              hx-indicator=".progress"#}
                               style="cursor: pointer;">
                                 {{ column.header }}
