@@ -754,3 +754,6 @@ div#columns:hover figure:not(:hover) {
   background: transparent;
 }
 
+.form-select {
+    --bs-form-select-bg-img: none !important;
+}
