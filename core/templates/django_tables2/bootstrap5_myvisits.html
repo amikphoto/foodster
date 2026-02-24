@@ -14,8 +14,8 @@
                         {% if column.orderable %}
                             <a hx-get="{{ request.path }}{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
                               hx-trigger="click"
-                              hx-target="div.table-container"
-                              hx-swap="innerHTML"
+                              hx-target=".table-container"
+                              hx-swap="outerHTML"
                               hx-indicator=".progress"
                               style="cursor: pointer;">
                                 {{ column.header }}
@@ -65,14 +65,14 @@
     {% block pagination %}
         {% if table.page and table.paginator.num_pages > 1 %}
         <nav aria-label="Table navigation">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center mt-3">
             {% if table.page.has_previous %}
                 {% block pagination.previous %}
                 <li class="previous page-item">
                     <a hx-get="{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
                       hx-trigger="click"
                       hx-target="div.table-container"
-                      hx-swap="outerHTML"
+                      hx-swap="outherHTML"
                       hx-indicator=".progress"
                        class="page-link">
                         <span aria-hidden="true">&laquo;</span>
