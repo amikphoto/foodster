@@ -1050,23 +1050,24 @@ class TagSelectorForm(forms.ModelForm):
             self.fields['category_tags'].initial = category_tags
 
     def save(self, commit=True):
-        """Сохраняем теги в стандартное поле тегов"""
         instance = super().save(commit=False)
 
-        if commit:
+        # Собираем теги
+        all_tags = (
+                list(self.cleaned_data.get('cafe_tags', [])) +
+                list(self.cleaned_data.get('dish_tags', [])) +
+                list(self.cleaned_data.get('category_tags', []))
+        )
+
+        # Сохраняем объект (если нужно)
+        if not instance.pk:
             instance.save()
+
+        # Сохраняем M2M (всегда!)
+        instance.tags.set(all_tags)
+
+        # Сохраняем другие M2M из формы (если есть)
+        if commit:
             self.save_m2m()
-
-        # Объединяем все теги и сохраняем в стандартное поле тегов
-        all_tags = list(self.cleaned_data['cafe_tags']) + \
-                   list(self.cleaned_data['dish_tags']) + \
-                   list(self.cleaned_data['category_tags'])
-
-        # Очищаем старые теги
-        instance.tags.clear()
-
-        # Добавляем новые теги
-        for tag in all_tags:
-            instance.tags.add(tag)
 
         return instance

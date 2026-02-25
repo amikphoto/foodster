@@ -244,29 +244,11 @@ class TagSelector(CMSPlugin):
         related_name='tag_selector_plugins',
         verbose_name=_('Selected Tags')
     )
-    # tag_type_filter = models.CharField(
-    #     max_length=20,
-    #     choices=[
-    #         ('all', _('All Tags')),
-    #         ('cafe', _('Cafes')),
-    #         ('dish', _('Dishes')),
-    #         ('category', _('Categories')),
-    #     ],
-    #     default='all',
-    #     verbose_name=_('Tag Type Filter')
-    # )
-    # show_count = models.BooleanField(
-    #     default=True,
-    #     verbose_name=_('Show Tag Count')
-    # )
-    # limit = models.PositiveIntegerField(
-    #     default=0,
-    #     verbose_name=_('Limit (0 = no limit)')
-    # )
-    #
-    # def copy_relations(self, old_instance):
-    #     """Копируем связи при копировании плагина"""
-    #     self.tags.set(old_instance.tags.all())
 
     def __str__(self):
-        return f'Tag Selector ({self.tags.count()} tags)'
+        # Проверяем, есть ли у объекта ID (сохранен ли он в БД)
+        if self.pk:
+            count = self.tags.count()
+            return f'Tag Selector ({count} tags)'
+        return 'New Tag Selector'
+
