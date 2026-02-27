@@ -45,6 +45,7 @@
                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Карточка кафе</button>
                 <button class="nav-link" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visitstable" type="button" role="tab" aria-controls="visits" aria-selected="false">Список посещений</button>
                 {% endif %}
+                <button class="nav-link" id="stories-tab" data-bs-toggle="tab" data-bs-target="#storiestable" type="button" role="tab" aria-controls="stories" aria-selected="false">Истории</button>
             </div>
         </nav>
 
@@ -83,6 +84,10 @@
                 <div id="visitstable" class="container h-auto tab-pane fade" role="tabpanel" aria-labelledby="visits-tab">
             {% endif %}
                 <p hx-get="/visits/{{ cafemodel.id }}" tx-target="#cafetable" hx-val="{{ cafemodel.id }}" hx-swap="outerHTML" hx-trigger="load"></p>
+            </div>
+
+            <div id="storiestable" class="container h-auto tab-pane fade" role="tabpanel" aria-labelledby="stories-tab">
+                <p hx-get="/storytales/{{ cafemodel.id }}" tx-target="#cafetable" hx-val="{{ cafemodel.id }}" hx-swap="outerHTML" hx-trigger="load"></p>
             </div>
         </div>
     </div>

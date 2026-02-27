@@ -1,0 +1,12 @@
+<div class="d-grid gap-2 col-10 mx-auto">
+    <p></p>
+    <h3 class="text-center">
+    Список статей блога с упоминанием заведения: {{ cafe }}
+    </h3>
+</div>
+
+
+<div
+{% for post_content in stories %}
+  {% include "djangocms_stories/includes/post_item.html" with post_content=post_content image="true" TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
+{% endfor %}

@@ -75,6 +75,44 @@ class CafeModel(models.Model):
     def get_absolute_url(self):
         return f'/cafe/{self.pk}/'
 
+    def get_stories(self):
+        """Находит статьи, где в плагине TagSelector выбрано это кафе"""
+        from taggit.models import TaggedItem
+        from cms.models import Placeholder
+        from djangocms_stories.models import PostContent  # ← Вот нужная модель!
+
+        # 1. Находим теги этого кафе
+        cafe_tagged_items = TaggedItem.objects.filter(
+            content_type__model='cafemodel',
+            object_id=self.pk
+        ).select_related('tag')
+
+        cafe_tag_ids = cafe_tagged_items.values_list('tag_id', flat=True)
+
+        if not cafe_tag_ids:
+            return PostContent.objects.none()
+
+        # 2. Находим плагины TagSelector с этими тегами
+        tag_selectors = TagSelector.objects.filter(
+            tags__id__in=cafe_tag_ids
+        ).select_related('cmsplugin_ptr')
+
+        plugin_ids = tag_selectors.values_list('cmsplugin_ptr_id', flat=True)
+
+        if not plugin_ids:
+            return PostContent.objects.none()
+
+        # 3. Находим placeholder'ы с этими плагинами
+        placeholders = Placeholder.objects.filter(
+            cmsplugin__id__in=plugin_ids
+        ).distinct()
+
+        # 4. Получаем ID статей из object_id placeholder'ов
+        story_ids = placeholders.values_list('object_id', flat=True)
+
+        # 5. Возвращаем статьи
+        return PostContent.objects.filter(pk__in=story_ids).distinct()
+
 class CafeImageModel(models.Model):
 
     title = models.CharField(max_length=200, default='')

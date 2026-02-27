@@ -12,8 +12,7 @@ from .views import (CafeFormsetView, VisitView, TestView, add_dish_library, Tabl
                     DishesListView, add_new_dish, add_new_dish_collection, TypeDictListView,
                     DictView, TypeEditTableView, TypeDictUpdateListView, ClassDictListView, ClassDictUpdateListView,
                     ClassEditTableView, BestDishesListView, MyVisitsListView,
-                    VisitsList, DishPhotosList, StartView, Privacy
-    # iommitest
+                    VisitsList, DishPhotosList, StartView, Privacy, StorytalesView
                     )
 # from iommi import Form
 # from core.models import DishModel
@@ -76,6 +75,8 @@ urlpatterns = [
     path('dishesphotos/<int:pk>/', DishPhotosList.as_view(), name='visitlist'),
 
     path('privacy/', Privacy.as_view(), name='visitlist'),
+
+    path('storytales/<int:pk>/', StorytalesView.as_view(), name='storytales'),
 
 ]
 

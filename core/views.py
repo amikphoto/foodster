@@ -8,7 +8,7 @@ from formset.views import FormViewMixin, IncompleteSelectResponseMixin
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from .models import CafeModel, VisitModel, DishModel, CafeImageModel, TypeOfDishes, DishCatalog, DishLibraryModel, \
-    TypeOfKitchen, CulinaryClassModel, DishImageModel, VisitImageModel, IntroImageModel
+    TypeOfKitchen, CulinaryClassModel, DishImageModel, VisitImageModel, IntroImageModel, TagSelector
 from .forms import CafeFormset, VisitFormset, CafeImageForm, DishForm, VisitForm, CafeForm, testform, DishLibraryForm, DishFormset
 from formset.views import FormCollectionView, EditCollectionView, FormViewMixin, FormView
 from django.http.response import JsonResponse, HttpResponseBadRequest
@@ -847,6 +847,19 @@ class CafesListView(LoginRequiredMixin, SingleTableMixin, FilterView):
             template_name = "cafeslist.html"
 
         return template_name
+
+class StorytalesView(TemplateView):
+    model = TagSelector
+    template_name = "storytales.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cafe_id'] = self.kwargs.get('pk')
+        cafe = CafeModel.objects.get(id=self.kwargs.get('pk'))
+        context['cafe'] = cafe
+        context['stories'] = cafe.get_stories()
+        # context['stories_count'] = stories.count(),
+        return context
 
 
 class VisitsView(SingleTableMixin, FilterView):
