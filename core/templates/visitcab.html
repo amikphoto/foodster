@@ -40,13 +40,20 @@
 
     <nav>
         <div class="nav nav-tabs nav-justified custom_tab_style1" id="myTab" role="tablist">
-            <a href="/cafe/{{ visitmodel.cafe_fk.id }}/?way=list" class="nav-link" id="back-tab" type="button" role="tab" aria-controls="home" aria-selected="true">Назад</a>
+            <a class="nav-link backnav-link"
+               href="/cafe/{{ visitmodel.cafe_fk.id }}/?way=list"
+               id="back-tab"
+               role="tab"
+               style="width: auto; min-width: 88px; padding: 1rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+                Назад
+            </a>
+<!--            <a href="/cafe/{{ visitmodel.cafe_fk.id }}/?way=list" style="width: auto; min-width: 88px; padding: 0.25rem;" class="nav-link" id="back-tab" type="button" role="tab" aria-controls="home" aria-selected="true">Назад</a>-->
             {% if way == 'list' %}
-            <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Описание визита</button>
-            <button class="nav-link active" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visitstable" type="button" role="tab" aria-controls="visits" aria-selected="false">Список блюд визита</button>
+            <button class="nav-link" id="home-tab" style="width: auto; min-width: 88px; padding: 0.25rem;" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Описание визита</button>
+            <button class="nav-link active" style="width: auto; min-width: 88px; padding: 0.25rem;" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visitstable" type="button" role="tab" aria-controls="visits" aria-selected="false">Список блюд визита</button>
             {% else %}
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Описание визита</button>
-            <button class="nav-link" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visitstable" type="button" role="tab" aria-controls="visits" aria-selected="false">Список блюд визита</button>
+            <button class="nav-link active" style="width: auto; min-width: 88px; padding: 0.25rem;" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Описание визита</button>
+            <button class="nav-link" style="width: auto; min-width: 88px; padding: 0.25rem;" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visitstable" type="button" role="tab" aria-controls="visits" aria-selected="false">Список блюд визита</button>
             {% endif %}            
         </div>
     </nav>
