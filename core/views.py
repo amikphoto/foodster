@@ -1360,8 +1360,8 @@ class DishesCafeListView(LoginRequiredMixin, SingleTableMixin, FilterView):
         queryset = DishModel.objects.filter(
             visit_fk__cafe_fk=self.kwargs.get('pk')
         ).values(
-            # 'pk',
-            'dish_fk',
+            'pk',
+            'dish_fk_id',
             'dish_fk__name'
         ).annotate(
             visit_ids=GroupConcat('visit_fk'),

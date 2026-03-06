@@ -1,12 +1,14 @@
 {% load dict_tags %}
 <div class="visit-links d-flex flex-wrap gap-1 justify-content-center">
     {# Добавлен фильтр slice:":5" ниже #}
-    {% for visit_id in record.visit_ids_list|slice:":5" %}
-        <a href="{% url 'core:dishes' cpk=cafe_id vpk=visit_id|get_id pk=record.dish_fk %}"
+    {% for visit_id in record.visit_ids_list %}
+        <a href="{% url 'core:dishes' cpk=cafe_id vpk=visit_id|get_id pk=record.pk %}"
            class="badge bg-primary text-decoration-none"
            data-bs-toggle="tooltip"
            title="Визит {{ visit_id|get_id }}">{{ visit_id|format_date }}
         </a>
+    <div class="debug">
+</div>
     {% empty %}
         <span class="text-muted">—</span>
     {% endfor %}
