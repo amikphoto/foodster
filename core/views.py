@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Min, Max
 from django.views.generic import UpdateView, FormView, TemplateView
 from django.forms.models import construct_instance
 # from formset.collection import construct_instance
@@ -12,14 +12,17 @@ from .models import CafeModel, VisitModel, DishModel, CafeImageModel, TypeOfDish
 from .forms import CafeFormset, VisitFormset, CafeImageForm, DishForm, VisitForm, CafeForm, testform, DishLibraryForm, DishFormset
 from formset.views import FormCollectionView, EditCollectionView, FormViewMixin, FormView
 from django.http.response import JsonResponse, HttpResponseBadRequest
-from .tables import DishesTable, CafesTable, VisitsTable, MyVisitsTable, TypeTable, ClassTable, BestDishesTable, VisitsListTable
-from .filters import DishLibraryFilterSet, CafesLibraryFilterSet, VisitsFilterSet, MyVisitsFilterSet, DishesFilterSet, KitchenTypeFilterSet, ClassFilterSet, BestDishesFilterSet
+from .tables import DishesTable, CafesTable, VisitsTable, MyVisitsTable, TypeTable, ClassTable, BestDishesTable, \
+    VisitsListTable, TypesOfCuisineTable, DishesVisitTable
+from .filters import DishLibraryFilterSet, CafesLibraryFilterSet, VisitsFilterSet, MyVisitsFilterSet, DishesFilterSet, \
+    KitchenTypeFilterSet, ClassFilterSet, BestDishesFilterSet, DishesCafeListSet
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.core.files import File
 from decimal import Decimal
 from django.http import HttpResponse
+from .aggregates import GroupConcat
 
 
 def process_initial(data):
@@ -1007,8 +1010,7 @@ class VisitCab(EditCollectionView):
 
 class DishesListView(SingleTableMixin, FilterView):
     model = DishModel
-    table_class = DishesTable
-    # queryset = model.objects.all()
+    table_class = DishesVisitTable
     filterset_class = DishesFilterSet
     paginate_by = 10
 
@@ -1346,3 +1348,79 @@ class DishPhotosList(TemplateView):
 
 class Privacy(TemplateView):
     template_name = 'policy.html'
+
+class DishesCafeListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    model = DishModel
+    table_class = DishesTable
+    filterset_class = DishesCafeListSet
+    paginate_by = 10
+    template_name = "dishes_of_cafe_list_htmx.html"
+
+    def get_queryset(self):
+        queryset = DishModel.objects.filter(
+            visit_fk__cafe_fk=self.kwargs.get('pk')
+        ).values(
+            # 'pk',
+            'dish_fk',
+            'dish_fk__name'
+        ).annotate(
+            visit_ids=GroupConcat('visit_fk'),
+            visit_dates=GroupConcat('visit_fk__data'),
+            dish_count=Count('id'),  # Сколько раз встречалось
+            avg_rating=Avg('rating'),  # Средний рейтинг 1
+            min_price=Min('price'),  # Минимальная цена
+            max_price=Max('price'),  # Максимальная цена
+        ).order_by('dish_fk__name')
+
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cafe_id'] = self.kwargs.get('pk')
+        context['cafe'] = CafeModel.objects.get(pk=self.kwargs.get('pk'))
+
+        return context
+
+class TypesOfCuisineView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    model = DishLibraryModel
+    table_class = TypesOfCuisineTable
+    # queryset = model.objects.all()
+    filterset_class = KitchenTypeFilterSet
+    paginate_by = 10
+
+    def get_filterset_kwargs(self, filterset_class):
+        """Передаем начальное значение в фильтр"""
+        kwargs = super().get_filterset_kwargs(filterset_class)
+
+        # Получаем тип кухни из URL
+        typesofcuisine_id = self.kwargs.get('pk')
+
+        # Если в GET-параметрах нет type_of_kitchen_fk, добавляем его
+        if typesofcuisine_id and (kwargs['data'] is None or 'type_of_kitchen_fk' not in kwargs['data']):
+            # Копируем GET-параметры (они immutable)
+            data = self.request.GET.copy()
+            data['type_of_kitchen_fk'] = typesofcuisine_id
+            kwargs['data'] = data
+
+        return kwargs
+
+    def get_queryset(self):
+        model = DishLibraryModel
+        typesofcuisine = TypeOfKitchen.objects.get(id=self.kwargs.get('pk'))
+        # queryset = model.objects.filter(type_of_kitchen_fk=typesofcuisine)
+        queryset = model.objects.all()
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['typesofcuisine_id'] = self.kwargs.get('pk')
+        context['typesofcuisine'] = TypeOfKitchen.objects.get(id=self.kwargs.get('pk'))
+        return context
+
+    def get_template_names(self):
+        if self.request.htmx:
+            template_name = "typesofcuisine_list_htmx.html"
+        else:
+            template_name = "typesofcuisine_list.html"
+
+        return template_name

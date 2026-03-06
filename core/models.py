@@ -43,6 +43,9 @@ class DishCatalog(models.Model):
     def __repr__(self):
         return f'<{self.__class__.__name__}: "{self.name}">'
 
+    def get_absolute_url(self):
+        return f'/dishescat/{self.pk}/'
+
 
 """ нужно добавить для кафе еще webaddress, телефон. Кроме того нужен Город """
 
@@ -178,12 +181,15 @@ class TypeOfKitchen(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return f'/typesofcuisine/{self.pk}/'
+
 
 class DishLibraryModel(models.Model):
     name = models.CharField(max_length=200, db_index=True, verbose_name='Наименование')
     dishcatalog_fk = models.ForeignKey(DishCatalog, on_delete=models.CASCADE, verbose_name='Блюдо-образец для сравнения', null=True, blank=True)
     type_of_kitchen_fk = models.ForeignKey(TypeOfKitchen, on_delete=models.CASCADE, verbose_name='Тип кухни')
-    cafe_fk = models.ForeignKey(CafeModel, on_delete=models.CASCADE, verbose_name='', null=True, blank=True)
+    cafe_fk = models.ForeignKey(CafeModel, on_delete=models.CASCADE, verbose_name='Кафе', null=True, blank=True)
     # CulinaryClassModel_fk = models.ForeignKey(CulinaryClassModel, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Кулинарные классы')
     CulinaryClassModel_fk = models.ManyToManyField(CulinaryClassModel, verbose_name='Кулинарные классы')
 

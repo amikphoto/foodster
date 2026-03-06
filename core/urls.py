@@ -12,8 +12,10 @@ from .views import (CafeFormsetView, VisitView, TestView, add_dish_library, Tabl
                     DishesListView, add_new_dish, add_new_dish_collection, TypeDictListView,
                     DictView, TypeEditTableView, TypeDictUpdateListView, ClassDictListView, ClassDictUpdateListView,
                     ClassEditTableView, BestDishesListView, MyVisitsListView,
-                    VisitsList, DishPhotosList, StartView, Privacy, StorytalesView
+                    VisitsList, DishPhotosList, StartView, Privacy, StorytalesView,
+                    TypesOfCuisineView, DishesCafeListView
                     )
+
 # from iommi import Form
 # from core.models import DishModel
 # from iommi.views import crud_views
@@ -52,15 +54,11 @@ urlpatterns = [
 
     path('cafe/<int:cpk>/<int:pk>/', VisitCab.as_view(), name='visit'),
 
-    # path('visits/', VisitsView.as_view(), name='allvisits'),
-
     path('visitcab/<int:cpk>/', VisitCab.as_view(extra_context={'add': True}), name='visitcab'),
 
     path('disheslist/<int:vpk>/', DishesListView.as_view(), name='dishlist'),
 
     path('adddish/<int:vpk>/', add_new_dish_collection.as_view(), name='add_new_dish'),
-
-    # path('cafe/<int:cpk>/<int:vpk>/<int:pk>/', add_new_dish.as_view(), name='dishes'),
 
     path('cafe/<int:cpk>/<int:vpk>/<int:pk>/', add_new_dish_collection.as_view(extra_context={'edit': True}), name='dishes'),
 
@@ -72,11 +70,15 @@ urlpatterns = [
 
     path('visitlist/<int:pk>/', VisitsList.as_view(), name='visitlist'),
 
-    path('dishesphotos/<int:pk>/', DishPhotosList.as_view(), name='visitlist'),
+    path('dishesphotos/<int:pk>/', DishPhotosList.as_view(), name='photolist'),
 
-    path('privacy/', Privacy.as_view(), name='visitlist'),
+    path('privacy/', Privacy.as_view(), name='privacy'),
 
     path('storytales/<int:pk>/', StorytalesView.as_view(), name='storytales'),
+
+    path('typesofcuisine/<int:pk>/', TypesOfCuisineView.as_view(), name='typesofcuisine'),
+
+    path('dishestable/<int:pk>/', DishesCafeListView.as_view(), name='dishestable'),
 
 ]
 

@@ -30,7 +30,7 @@
             <div id="capbtitle" class="container">
                 <p>
                     <h3 class="text-center">
-                    Кабинет кафе: {{ object.cafe_fk }}
+                    Визит ({{ visitmodel }}) в кафе {{ object.cafe_fk }}
                     </h3>
                 </p>
             </div>
@@ -39,15 +39,8 @@
     
 
     <nav>
-        <div class="nav nav-tabs nav-justified custom_tab_style1" id="myTab" role="tablist">
-            <a class="nav-link backnav-link"
-               href="/cafe/{{ visitmodel.cafe_fk.id }}/?way=list"
-               id="back-tab"
-               role="tab"
-               style="width: auto; min-width: 88px; padding: 1rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
-                Назад
-            </a>
-<!--            <a href="/cafe/{{ visitmodel.cafe_fk.id }}/?way=list" style="width: auto; min-width: 88px; padding: 0.25rem;" class="nav-link" id="back-tab" type="button" role="tab" aria-controls="home" aria-selected="true">Назад</a>-->
+        <div class="nav nav-tabs nav-justified custom_tab_style1" style="flex-wrap: nowrap; overflow-x: auto;" id="myTab" role="tablist">
+            <a href="/cafe/{{ visitmodel.cafe_fk.id }}/?way=list" style="width: auto; min-width: 88px; padding: 0.25rem;" class="nav-link" id="back-tab" type="button" role="tab" aria-controls="home" aria-selected="true">Назад</a>
             {% if way == 'list' %}
             <button class="nav-link" id="home-tab" style="width: auto; min-width: 88px; padding: 0.25rem;" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Описание визита</button>
             <button class="nav-link active" style="width: auto; min-width: 88px; padding: 0.25rem;" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visitstable" type="button" role="tab" aria-controls="visits" aria-selected="false">Список блюд визита</button>
@@ -89,9 +82,8 @@
         {% else %}
         <div id="visitstable" class="container h-auto tab-pane fade" role="tabpanel" aria-labelledby="visits-tab">
         {% endif %}    
-        <p hx-get="/disheslist/{{ visitmodel.id }}" hx-vals='{"visit":"{{  visitmodel.id }}" }' tx-target="#cafetable" hx-swap="outerHTML" hx-trigger="load">
+        <p hx-get="/disheslist/{{ visitmodel.id }}" hx-vals='{"visit":"{{  visitmodel.id }}" }' hx-swap="outerHTML" hx-trigger="load">
         </p>
-            {#        {% render_table table %}#}
         </div>
     </div>
     </div>

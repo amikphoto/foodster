@@ -1,0 +1,12 @@
+{% with rating_raw=value|default:0 %}
+    <div class="stars">
+        {% for i in "12345" %}
+            {% if forloop.counter <= rating_raw %}
+                <span class="star filled">★</span>
+            {% else %}
+                <span class="star empty">☆</span>
+            {% endif %}
+        {% endfor %}
+        <span class="rating-value">({{ rating_raw|floatformat:1 }})</span>
+    </div>
+{% endwith %}

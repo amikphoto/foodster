@@ -19,12 +19,10 @@ class ClassFilterSet(django_filters.FilterSet):
 
 class KitchenTypeFilterSet(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains', label='Фильтр по названию')
-    # typeofkitchen = django_filters.CharFilter(lookup_expr='icontains', label='Фильтр по типу кухни')
-
 
     class Meta:
-        model = TypeOfKitchen
-        fields = ['name',]
+        model = DishLibraryModel
+        fields = ['name','type_of_kitchen_fk',]
 
 class BestDishesFilterSet(django_filters.FilterSet):
     dish_fk = django_filters.CharFilter(field_name="dish_fk__name", lookup_expr='icontains', label='Фильтр по названию блюда')
@@ -32,6 +30,14 @@ class BestDishesFilterSet(django_filters.FilterSet):
     class Meta:
         model = DishModel
         fields = ['dish_fk']
+
+class DishesCafeListSet(django_filters.FilterSet):
+    dish_fk = django_filters.CharFilter(field_name="dish_fk__name", lookup_expr='icontains', label='Фильтр по названию блюда')
+
+    class Meta:
+        model = DishModel
+        fields = ['dish_fk']
+
 
 
 class DishesFilterSet(django_filters.FilterSet):

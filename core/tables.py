@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from easy_thumbnails.files import get_thumbnailer
 from django.utils.html import format_html
 from django.urls import reverse
+
 from django_tables2.utils import A
 
 def item_data(**kwargs):
@@ -121,31 +122,101 @@ class BestDishesTable(tables.Table):
         fields = ['image','dish_info','dish_fk__name','visit_fk__cafe_fk__title','group_count','group_average']
 
 
-
-class DishesTable(tables.Table):
-    # id = tables.LinkColumn(text="Id", args=[A("pk")])
-    # item = tables.TemplateColumn('<a href="/dishes/{{record.id}}">Edit</a>')
-    # title = tables.Column(attrs={"td":
-    #      {"hx-get": item_data,
-    #       "hx-target": "#modaldialog",
-    #       "data-bs-toggle": "modal",
-    #       "data-bs-target": "#modaldialog",
-    #       }})
-    # id = tables.LinkColumn(text=lambda record: record.dish_fk, args=[A("pk")])
+class DishesVisitTable(tables.Table):
     id = tables.Column(verbose_name='Название блюда', accessor='dish_fk' , linkify=lambda record: record.get_absolute_url())
 
     rating = tables.TemplateColumn(verbose_name='Рейтинг', template_name="stars.html")
-    # dish_fk = tables.LinkColumn()
 
     class Meta:
         model = DishModel
         template_name = "django_tables2/bootstrap5_dishes.html"
-        # fields = {
-        #     'title': ['exact', 'icontains'],
-        #     ("title", "dishcatalog_fk", "type_of_kitchen_fk")
-        # }
-        # fields = ['id','rating','rating2']
         fields = ['id', 'rating']
+
+
+class DishesTable(tables.Table):
+
+    # visit_ids_list = tables.Column(
+    #     verbose_name='ID визитов',
+    #     accessor='visit_ids_list',
+    #     orderable=False,
+    #     attrs={
+    #         'td': {'class': 'text-muted'},
+    #         'th': {'class': 'text-center'}
+    #     }
+    # )
+
+    name = tables.Column(
+        verbose_name='Название блюда',
+        accessor='dish_fk__name',
+        # linkify=lambda record: "/visitlist/" + str(record.visit_ids_list),
+    )
+
+    # Количество посещений
+    dish_count = tables.Column(
+        verbose_name='Визиты',
+        accessor='dish_count'
+    )
+
+    visit_links = tables.TemplateColumn(
+        verbose_name='Визиты',
+        template_name="django_tables2/visit_links.html",
+        orderable=False,
+        attrs={'td': {'class': 'text-center'}}
+    )
+
+    # Средний рейтинг (числом)
+    avg_rating = tables.Column(
+        verbose_name='Средний рейтинг',
+        accessor='avg_rating',
+    )
+
+    # Звезды рейтинга (шаблон) - БЕЗ extra_context
+    stars = tables.TemplateColumn(
+        verbose_name='Рейтинг',
+        template_name="aver_stars.html",
+        accessor='avg_rating'  # ← Передаёт значение в record.value
+    )
+
+    # Цена (диапазон)
+    price_range = tables.Column(
+        verbose_name='Цена',
+        accessor='min_price',
+    )
+
+    class Meta:
+        template_name = "django_tables2/bootstrap5_dishes.html"
+        fields = ['name', 'visit_links', 'dish_count', 'avg_rating', 'stars', 'price_range',]
+
+    def render_price_range(self, value, record):
+        if record['min_price'] and record['max_price']:
+            if record['min_price'] == record['max_price']:
+                return f"{record['min_price']} ₽"
+            return f"от {record['min_price']} до {record['max_price']} ₽"
+        return '—'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # for row in self.rows:
+        #     visit_ids = row.record.get('visit_ids', '')
+        #     row.record['visit_ids_list'] = [int(x) for x in visit_ids.split(',')] if visit_ids else []
+        for row in self.rows:
+            visit_ids_list = []
+            visit_dates_list = []
+
+            if row.record.get('visit_ids'):
+                ids = row.record['visit_ids'].split(',')
+                dates = row.record.get('visit_dates', '').split(',') if row.record.get('visit_dates') else []
+
+                for i, vid in enumerate(ids):
+                    visit_ids_list.append({
+                        'id': int(vid),
+                        'date': dates[i] if i < len(dates) else None
+                    })
+
+            # Добавляем в record для доступа в шаблоне
+            row.record['visit_ids_list'] = visit_ids_list
+            row.record['visit_dates_list'] = visit_dates_list
+            # row.record['cafe_id'] = self.cafe_id
 
 class VisitsListTable(tables.Table):
 
@@ -241,3 +312,12 @@ class MyVisitsTable(tables.Table):
         template_name = "django_tables2/bootstrap5_myvisits.html"
         fields = ['data', 'cafe_fk__title', 'description', 'average_dish_rating']
         order_by = '-data'
+
+
+class TypesOfCuisineTable(tables.Table):
+    cafe_fk = tables.Column(linkify=lambda record: reverse('core:cafe_cab', kwargs={'pk': record.cafe_fk_id}))
+
+    class Meta:
+        model = DishLibraryModel
+        template_name = "django_tables2/bootstrap5_сuisine.html"
+        fields = ['cafe_fk', 'name', 'type_of_kitchen_fk']

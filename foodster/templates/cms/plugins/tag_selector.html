@@ -54,14 +54,26 @@
 
     {% if category_tags %}
         {% for item in category_tags %}
-            <span class="tag tag-category badge text-bg-info"
-                  title="{{ item.tag.name }}"
-                  style="font-weight: 400; padding: 0.5em 0.75em;">
-                {{ item.tag.name }}
-                {% if show_count %}
-                    <span class="tag-count ms-1">{{ item.tag.taggit_taggeditem_items.count }}</span>
-                {% endif %}
-            </span>
+            {% if item.url %}
+                <a href="{{ item.url }}"
+                   class="tag tag-category badge text-bg-info text-decoration-none"
+                   title="{{ item.tag.name }}"
+                   style="font-weight: 400; padding: 0.5em 0.75em;">
+                    {{ item.tag.name }}
+                    {% if show_count %}
+                        <span class="tag-count ms-1">{{ item.tag.taggit_taggeditem_items.count }}</span>
+                    {% endif %}
+                </a>
+            {% else %}
+                <span class="tag tag-category badge text-bg-info"
+                      title="{{ item.tag.name }}"
+                      style="font-weight: 400; padding: 0.5em 0.75em;">
+                    {{ item.tag.name }}
+                    {% if show_count %}
+                        <span class="tag-count ms-1">{{ item.tag.taggit_taggeditem_items.count }}</span>
+                    {% endif %}
+                </span>
+            {% endif %}
         {% endfor %}
     {% endif %}
 

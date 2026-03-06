@@ -778,3 +778,35 @@ div#columns:hover figure:not(:hover) {
 .form-select {
     --bs-form-select-bg-img: none !important;
 }
+
+/*.nav-tabs {*/
+/*  display: flex;*/
+/*  align-items: stretch;*/
+/*}*/
+
+/*.nav-tabs .nav-link {*/
+/*  order: 1;*/
+/*  flex: 1;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  min-height: 40px;*/
+/*}*/
+
+/*.nav-tabs .nav-link.active {*/
+/*  flex: 1;*/
+/*  min-height: 40px;*/
+/*}*/
+
+/*@media (max-width: 767px) {*/
+/*  .nav-tabs.flex-column .nav-link {*/
+/*    order: 1;*/
+/*  }*/
+
+/*  .nav-tabs.flex-column .nav-link.active {*/
+/*    order: 999;*/
+/*    !*margin-top: 10px;*!*/
+/*    border-top: 2px solid #dee2e6;*/
+/*    padding-top: 10px;*/
+/*  }*/
+/*}*/
