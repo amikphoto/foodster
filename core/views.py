@@ -836,7 +836,7 @@ class TableView(SingleTableMixin, FilterView):
         return template_name
 
 
-class CafesListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+class CafesListView(SingleTableMixin, FilterView):
     model = CafeModel
     table_class = CafesTable
     queryset = model.objects.all()
@@ -1349,7 +1349,7 @@ class DishPhotosList(TemplateView):
 class Privacy(TemplateView):
     template_name = 'policy.html'
 
-class DishesCafeListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+class DishesCafeListView(SingleTableMixin, FilterView):
     model = DishModel
     table_class = DishesTable
     filterset_class = DishesCafeListSet

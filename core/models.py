@@ -137,7 +137,7 @@ class VisitModel(models.Model):
     register = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.description
+        return self.data.strftime("%d.%m.%Y %H:%M")
 
     class Meta:
         verbose_name_plural = "Visits"
