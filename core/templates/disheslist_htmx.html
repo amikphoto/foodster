@@ -2,11 +2,13 @@
 {% load render_table from django_tables2 %}
 
     <br>
+    {% if request.user.is_authenticated %}
         <div class="d-grid gap-2 col-10 mx-auto">
             <a class="btn btn-outline-primary" href="/adddish/{{ visit_id }}">
                 Добавить новое блюдо
             </a>
         </div>
+    {% endif %}
     <br>
 
     <div class="container h-auto filer-box">
