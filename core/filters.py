@@ -6,15 +6,20 @@ from dal_select2.widgets import ModelSelect2
 # from django_addanother.widgets import AddAnotherWidgetWrapper
 
 
+class DishesCatFilterSet(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains', label='Фильтр по названию')
+
+    class Meta:
+        model = DishCatalog
+        fields = ['name',]
+
 class ClassFilterSet(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains', label='Фильтр по названию')
     # typeofkitchen = django_filters.CharFilter(lookup_expr='icontains', label='Фильтр по типу кухни')
 
-
     class Meta:
         model = CulinaryClassModel
         fields = ['name',]
-
 
 
 class KitchenTypeFilterSet(django_filters.FilterSet):

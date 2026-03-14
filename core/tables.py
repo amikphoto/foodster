@@ -1,5 +1,6 @@
 import django_tables2 as tables
-from .models import DishLibraryModel, CafeModel, VisitModel, DishModel, TypeOfKitchen, CulinaryClassModel, DishImageModel
+from .models import DishLibraryModel, CafeModel, VisitModel, DishModel, TypeOfKitchen, CulinaryClassModel, \
+    DishImageModel, DishCatalog
 from django.utils.safestring import mark_safe
 from easy_thumbnails.files import get_thumbnailer
 from django.utils.html import format_html
@@ -126,11 +127,12 @@ class DishesVisitTable(tables.Table):
     id = tables.Column(verbose_name='Название блюда', accessor='dish_fk' , linkify=lambda record: record.get_absolute_url())
 
     rating = tables.TemplateColumn(verbose_name='Рейтинг', template_name="stars.html")
+    user = tables.Column(verbose_name='Критик',)
 
     class Meta:
         model = DishModel
         template_name = "django_tables2/bootstrap5_dishes.html"
-        fields = ['id', 'rating']
+        fields = ['id','rating','user']
 
 
 class DishesTable(tables.Table):
@@ -321,3 +323,9 @@ class TypesOfCuisineTable(tables.Table):
         model = DishLibraryModel
         template_name = "django_tables2/bootstrap5_сuisine.html"
         fields = ['cafe_fk', 'name', 'type_of_kitchen_fk']
+
+
+class DishesCatTable(tables.Table):
+    class Meta:
+        model = DishCatalog
+        template_name = "django_tables2/bootstrap.html"

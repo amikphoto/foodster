@@ -13,9 +13,9 @@ from .forms import CafeFormset, VisitFormset, CafeImageForm, DishForm, VisitForm
 from formset.views import FormCollectionView, EditCollectionView, FormViewMixin, FormView
 from django.http.response import JsonResponse, HttpResponseBadRequest
 from .tables import DishesTable, CafesTable, VisitsTable, MyVisitsTable, TypeTable, ClassTable, BestDishesTable, \
-    VisitsListTable, TypesOfCuisineTable, DishesVisitTable
+    VisitsListTable, TypesOfCuisineTable, DishesVisitTable, DishesCatTable
 from .filters import DishLibraryFilterSet, CafesLibraryFilterSet, VisitsFilterSet, MyVisitsFilterSet, DishesFilterSet, \
-    KitchenTypeFilterSet, ClassFilterSet, BestDishesFilterSet, DishesCafeListSet
+    KitchenTypeFilterSet, ClassFilterSet, BestDishesFilterSet, DishesCafeListSet, DishesCatFilterSet
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
@@ -916,7 +916,7 @@ class Cafe_cab(EditCollectionView):
             context['form_collection'].initial.pop('cafe_images')
         else:
             if not self.request.user.is_staff:
-                context['form_collection'].initial.pop('cafe_images')
+                context['form_collection'].initial.pop('cafe_images', None)
         return context
 
 
@@ -1380,6 +1380,26 @@ class DishesCafeListView(SingleTableMixin, FilterView):
         context['cafe'] = CafeModel.objects.get(pk=self.kwargs.get('pk'))
 
         return context
+
+
+class DishesCatListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    model = DishCatalog
+    table_class = DishesCatTable
+    filterset_class = DishesCatFilterSet
+    template_name = "dishes_cat_list.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dish_id'] = self.kwargs.get('pk')
+        return context
+
+    def get_template_names(self):
+        if self.request.htmx:
+            template_name = "dishes_cat_list_htmx.html"
+        else:
+            template_name = "dishes_cat_list.html"
+
+        return template_name
 
 class TypesOfCuisineView(LoginRequiredMixin, SingleTableMixin, FilterView):
     model = DishLibraryModel

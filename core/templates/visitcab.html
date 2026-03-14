@@ -3,7 +3,6 @@
 {% load render_table from django_tables2 %}
 {% load thumbnail %}
 
-
 {%  block content %}
     <div id="cab">
         <div class="bg-secondary">
@@ -30,7 +29,10 @@
             <div id="capbtitle" class="container">
                 <p>
                     <h3 class="text-center">
-                    Визит ({{ visitmodel }}) в кафе {{ object.cafe_fk }}
+                    {% if add %}
+                    {% else %}
+                    Визит{% if visitmodel %} ({{ visitmodel }}){% else %} (новый){% endif %} в кафе {{ object.cafe_fk }}
+                    {% endif %}
                     </h3>
                 </p>
             </div>
@@ -87,6 +89,7 @@
         </div>
     </div>
     </div>
+
     <script>
         new Carousel(document.getElementById('cardSlider'), {
           Navigation: {
@@ -110,5 +113,4 @@
           }
         });        
     </script>
-
 {% endblock %}
