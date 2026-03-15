@@ -327,5 +327,5 @@ class TypesOfCuisineTable(tables.Table):
 
 class DishesCatTable(tables.Table):
     class Meta:
-        model = DishCatalog
-        template_name = "django_tables2/bootstrap.html"
+        model = DishModel
+        template_name = "django_tables2/bootstrap5_dishes.html"

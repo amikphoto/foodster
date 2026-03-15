@@ -1382,9 +1382,9 @@ class DishesCafeListView(SingleTableMixin, FilterView):
         return context
 
 
-class DishesCatListView(LoginRequiredMixin, SingleTableMixin, FilterView):
-    model = DishCatalog
-    table_class = DishesCatTable
+class DishesCatListView(SingleTableMixin, FilterView):
+    model = DishModel
+    table_class = BestDishesTable
     filterset_class = DishesCatFilterSet
     template_name = "dishes_cat_list.html"
 
@@ -1393,15 +1393,51 @@ class DishesCatListView(LoginRequiredMixin, SingleTableMixin, FilterView):
         context['dish_id'] = self.kwargs.get('pk')
         return context
 
+    # def get_template_names(self):
+    #     if self.request.htmx:
+    #         template_name = "dishes_cat_list_htmx.html"
+    #     else:
+    #         template_name = "dishes_cat_list.html"
+    #
+    #     return template_name
+
     def get_template_names(self):
         if self.request.htmx:
-            template_name = "dishes_cat_list_htmx.html"
+            template_name = "bestdisheslist_htmx.html"
         else:
-            template_name = "dishes_cat_list.html"
+            template_name = "bestdisheslist.html"
 
         return template_name
 
-class TypesOfCuisineView(LoginRequiredMixin, SingleTableMixin, FilterView):
+
+    def get_queryset(self):
+        model = DishModel
+        dishcat = DishCatalog.objects.get(id=self.kwargs.get('pk'))
+        # queryset = model.objects.filter(dish_fk__dishcatalog_fk=dishcat)
+        # queryset = model.objects.all()
+        queryset = (
+            model.objects
+            .select_related(
+                'dish_fk',
+                'visit_fk__cafe_fk'
+            )
+            .filter(dish_fk__dishcatalog_fk=dishcat)
+            .values(
+                'dish_fk',
+                'dish_fk__name',
+                'visit_fk__cafe_fk',
+                'visit_fk__cafe_fk__title'
+            )
+            .annotate(
+                group_count=Count('pk'),
+                group_average=Avg('rating')
+            )
+            .order_by('-group_average')
+        )
+
+        return queryset
+
+class TypesOfCuisineView(SingleTableMixin, FilterView):
     model = DishLibraryModel
     table_class = TypesOfCuisineTable
     # queryset = model.objects.all()
