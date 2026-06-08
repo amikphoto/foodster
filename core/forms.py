@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.contrib.auth import get_user_model
 from django import forms
 from django.forms.models import ModelForm, ModelChoiceField, construct_instance, model_to_dict
 from django.template.context_processors import request
@@ -259,7 +259,7 @@ class DishLibraryForm(ModelForm):
 class DishForm(ModelForm):
 
     id = IntegerField(required=False, widget=HiddenInput)
-    currentuser = ModelChoiceField(required=False, queryset=CafeModel.objects.all() ,widget=HiddenInput)
+    currentuser = ModelChoiceField(required=False, queryset=get_user_model().objects.all() ,widget=HiddenInput)
 
     dish_info = IntegerField(required=False, widget=HiddenInput)
 
