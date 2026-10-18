@@ -332,7 +332,6 @@ class DishForm(ModelForm):
             'dish_fk': Selectize(
                 attrs={'hx-get': '/dishinfo',
                        'hx-target':'[name="dish_info"]',
-                       #id_edit_dish\\.CulinaryClassModel_fk_initial',
                        'hx-swap': 'outerHTML',
                        'hx-trigger':'click from:.dish_trigger delay:100ms, load, change changed',
                        },

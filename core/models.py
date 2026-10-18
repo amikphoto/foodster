@@ -214,7 +214,7 @@ class DishModel(models.Model):
 
     tags = TaggableManager()
 
-    price = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     TYPE_SELECT = (
         ('1', '1'),
